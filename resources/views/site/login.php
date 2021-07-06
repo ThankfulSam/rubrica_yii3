@@ -12,7 +12,7 @@ use Yiisoft\Html\Html;
 
 <?php if (!empty($form->getUsername())): ?>
     <div class="notification is-success">
-        The message is: <?= Html::encode($form->getUsername()) ?>
+        Username is: <?= Html::encode($form->getUsername() . $form->getPassword()) ?>
     </div>
 <?php endif ?>
 
@@ -24,7 +24,8 @@ use Yiisoft\Html\Html;
     ->begin() ?>
 
 <?= Field::widget()->config($form, 'username') ?>
+<?= Field::widget()->config($form, 'password')->passwordInput() ?>
 
-<?= Html::submitButton('Say') ?>
+<?= Html::submitButton('Login') ?>
 
 <?= Form::end() ?>

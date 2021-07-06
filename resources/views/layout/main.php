@@ -18,7 +18,8 @@ use Yiisoft\Yii\Bulma\NavBar;
  * @var Locale $locale
  * @var Yiisoft\View\WebView $this
  * @var Yiisoft\Router\UrlMatcherInterface $urlMatcher
- */
+ * @var \Yiisoft\Router\UrlGeneratorInterface $url 
+ * */
 
 $assetManager->register([
     AppAsset::class,
@@ -62,6 +63,7 @@ $this->addJsVars($assetManager->getJsVars());
                         )
                         ->items([
                             ['label' =>'Rubrica', 'url' => '/site/index'],
+                            ['label' => 'Login', 'url' => 'site/login']
                         ]) ?>
 
                     <?= NavBar::end() ?>
