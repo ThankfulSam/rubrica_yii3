@@ -12,7 +12,7 @@ return [
     'app' => [
         'charset' => 'UTF-8',
         'locale' => 'en',
-        'name' => 'My Project',
+        'name' => 'Sam\'s Project',
     ],
 
     'yiisoft/aliases' => [

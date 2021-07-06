@@ -14,6 +14,12 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
+use Yiisoft\Session\Session;
+use Yiisoft\Session\SessionInterface;
+use Yiisoft\Auth\IdentityRepositoryInterface;
+use Psr\Container\ContainerInterface;
+use Cycle\ORM\ORMInterface;
+use App\User\IdentityRepository;
 
 return [
     RequestFactoryInterface::class => RequestFactory::class,
@@ -22,4 +28,15 @@ return [
     StreamFactoryInterface::class => StreamFactory::class,
     UriFactoryInterface::class => UriFactory::class,
     UploadedFileFactoryInterface::class => UploadedFileFactory::class,
+    
+    /*SessionInterface::class =>[
+        'class' => Session::class, 
+        '__construct' => [
+            $params['session']['options'] ?? [],
+            $params['session']['handler'] ?? null,
+        ],
+    ],*/
+    
+    //User
+    IdentityRepositoryInterface::class => IdentityRepository::class,
 ];

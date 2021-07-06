@@ -39,10 +39,10 @@ return [
             'yiisoft/aliases' => [
                 'common.php',
             ],
-            'yiisoft/router' => [
+            'yiisoft/validator' => [
                 'common.php',
             ],
-            'yiisoft/validator' => [
+            'yiisoft/router' => [
                 'common.php',
             ],
         ],
@@ -119,6 +119,9 @@ return [
                 'params.php',
             ],
             'yiisoft/router-fastroute' => [
+                'params.php',
+            ],
+            'yiisoft/user' => [
                 'params.php',
             ],
             'yiisoft/yii-bulma' => [
@@ -215,6 +218,9 @@ return [
                 'web.php',
             ],
             'yiisoft/router-fastroute' => [
+                'web.php',
+            ],
+            'yiisoft/user' => [
                 'web.php',
             ],
             'yiisoft/yii-bulma' => [
