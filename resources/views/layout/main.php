@@ -62,8 +62,8 @@ $this->addJsVars($assetManager->getJsVars());
                                 : ''
                         )
                         ->items([
-                            ['label' =>'Rubrica', 'url' => '/site/index'],
-                            ['label' => 'Login', 'url' => 'site/login']
+                            ['label' =>'Rubrica', 'url' => '/'],
+                            ['label' => 'Login', 'url' => '/login']
                         ]) ?>
 
                     <?= NavBar::end() ?>
