@@ -28,14 +28,6 @@ return [
     UriFactoryInterface::class => UriFactory::class,
     UploadedFileFactoryInterface::class => UploadedFileFactory::class,
     
-    /*SessionInterface::class =>[
-        'class' => Session::class, 
-        '__construct' => [
-            $params['session']['options'] ?? [],
-            $params['session']['handler'] ?? null,
-        ],
-    ],*/
-    
     //User
     IdentityRepositoryInterface::class => IdentityRepository::class,
 ];

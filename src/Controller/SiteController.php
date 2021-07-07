@@ -15,7 +15,6 @@ use App\User\IdentityRepository;
 use Infection\Mutator\ReturnValue\This;
 use Yiisoft\User\Event\AfterLogin;
 
-
 class SiteController
 {
     private ViewRenderer $viewRenderer;
