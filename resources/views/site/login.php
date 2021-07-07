@@ -31,8 +31,4 @@ use \Yiisoft\User\CurrentUser;
 
 <?= Form::end() ?>
 
-<?php  
-    //if (!$user->isGuest()): ?>
-    
-<?php //endif; ?>
 
