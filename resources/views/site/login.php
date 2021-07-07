@@ -17,7 +17,7 @@ use \Yiisoft\User\CurrentUser;
         <?= Html::encode('id errato') ?>
     </div>
 <?php endif ?>
-
+<h1 class="title">Login!</h1>
 <?= Form::widget()
     ->action($url->generate('site/login'))
     ->options([

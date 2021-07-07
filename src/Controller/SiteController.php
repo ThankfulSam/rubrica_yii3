@@ -68,11 +68,12 @@ class SiteController
     public function actionLogout() {
         $form = new LoginForm();
         
-        if($this->user->logout()){
-            return $this->viewRenderer->render('login', [
-                'form' => $form
-            ]);
+        if (!$this->user->isGuest()){
+            $this->user->logout();
         }
+            
+        return $this->viewRenderer->render('login', ['form' => $form ]);
+        
     }
     
 }

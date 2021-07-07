@@ -9,7 +9,7 @@ $this->params['breadcrumbs'] = '/';
 $this->setTitle($applicationParameters->getName());
 ?>
 
-<h1 class="title">Hello!</h1>
+<h1 class="title">I miei contatti</h1>
 
 <p class="subtitle">Let's start something great with <strong>Yii3</strong>!</p>
 
