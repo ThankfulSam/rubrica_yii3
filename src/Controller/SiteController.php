@@ -7,10 +7,11 @@ namespace App\Controller;
 use Psr\Http\Message\ResponseInterface;
 use Yiisoft\Yii\View\ViewRenderer;
 use Psr\Http\Message\ServerRequestInterface;
-use \Yiisoft\User;
+use \Yiisoft\User\CurrentUser;
 use App\Form\LoginForm;
 use Yiisoft\Http\Method;
 use Yiisoft\Validator\Validator;
+use App\User\IdentityRepository;
 
 class SiteController
 {
@@ -26,25 +27,47 @@ class SiteController
         return $this->viewRenderer->render('index');
     }
     
-    public function actionIndex(ServerRequestInterface $request, User $user) 
+    public function actionIndex(ServerRequestInterface $request, CurrentUser $user) 
     {
-        if ($user->isGuest())
+        /*if ($user->isGuest())
             todo;
-        else todo;
+        else todo;*/
     }
     
-    public function actionLogin(ServerRequestInterface $request, Validator $validator): ResponseInterface 
+    public function actionLogin(ServerRequestInterface $request, Validator $validator, 
+        CurrentUser $user, IdentityRepository $identityRepository): ResponseInterface 
     {
         $form = new LoginForm();
         
         if($request->getMethod() === Method::POST) {
             $form->load($request->getParsedBody());
             $validator->validate($form);
+            
+            $identity = $identityRepository->findIdentity($form->getId());
+            if ($identity != null){
+                $user->login($identity);
+            }
+            
         }
-        return $this->viewRenderer->render('login', [
-            'form' => $form
-        ]);
+
+        if($user->isGuest()){
+            return $this->viewRenderer->render('login', [
+                'form' => $form
+            ]);
+        } else {
+            return $this->viewRenderer->render('index');
+        }
+            
+    }
     
+    public function actionLogout(CurrentUser $user) {
+        $form = new LoginForm();
+        
+        if($user->logout()){
+            return $this->viewRenderer->render('login', [
+                'form' => $form
+            ]);
+        } 
     }
     
 }

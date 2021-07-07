@@ -10,12 +10,12 @@ final class IdentityRepository implements IdentityRepositoryInterface
 {
     private const USERS = [
         [
-            'id' => 1,
-            'token' => '12345'
+            'id' => 'samu',
+            'password' => 'samuelemillucci'
         ],
         [
             'id' => 42,
-            'token' => '54321'
+            'password' => '54321'
         ],
     ];
     
@@ -32,12 +32,12 @@ final class IdentityRepository implements IdentityRepositoryInterface
     
     public function findIdentityByToken(string $token, string $type) : ?IdentityInterface
     {
-        foreach (self::USERS as $user) {
+        /*foreach (self::USERS as $user) {
             if ($user['token'] === $token) {
                 return new Identity((string)$user['id']);
             }
         }
         
-        return null;
+        return null;*/
     }
 }

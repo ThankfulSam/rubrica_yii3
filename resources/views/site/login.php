@@ -3,16 +3,18 @@
 use Yiisoft\Form\Widget\Field;
 use Yiisoft\Form\Widget\Form;
 use Yiisoft\Html\Html;
+use \Yiisoft\User\CurrentUser;
 
 /* @var \App\Form\LoginForm $form */
 /* @var string $csrf */
 /* @var \Yiisoft\Router\UrlGeneratorInterface $url */
+/* @var \Yiisoft\User\CurrentUser $user */
 ?>
 
 
-<?php if (!empty($form->getUsername())): ?>
-    <div class="notification is-success">
-        Username is: <?= Html::encode($form->getUsername() . $form->getPassword()) ?>
+<?php if (!empty($form->getId())): ?>
+    <div class="notification is-danger">
+        <?= Html::encode('id errato') ?>
     </div>
 <?php endif ?>
 
@@ -23,9 +25,14 @@ use Yiisoft\Html\Html;
     ])
     ->begin() ?>
 
-<?= Field::widget()->config($form, 'username') ?>
-<?= Field::widget()->config($form, 'password')->passwordInput() ?>
+<?= Field::widget()->config($form, 'id')->passwordInput(); ?>
 
 <?= Html::submitButton('Login') ?>
 
 <?= Form::end() ?>
+
+<?php  
+    //if (!$user->isGuest()): ?>
+    
+<?php //endif; ?>
+

@@ -18,7 +18,6 @@ use Yiisoft\Session\Session;
 use Yiisoft\Session\SessionInterface;
 use Yiisoft\Auth\IdentityRepositoryInterface;
 use Psr\Container\ContainerInterface;
-use Cycle\ORM\ORMInterface;
 use App\User\IdentityRepository;
 
 return [

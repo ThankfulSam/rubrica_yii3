@@ -19,6 +19,7 @@ use Yiisoft\Yii\Bulma\NavBar;
  * @var Yiisoft\View\WebView $this
  * @var Yiisoft\Router\UrlMatcherInterface $urlMatcher
  * @var \Yiisoft\Router\UrlGeneratorInterface $url 
+ * @var \Yiisoft\User\CurrentUser $user
  * */
 
 $assetManager->register([
@@ -54,17 +55,27 @@ $this->addJsVars($assetManager->getJsVars());
                         ->options(['class' => 'is-black', 'data-sticky' => '', 'data-sticky-shadow' => ''])
                         ->itemsOptions(['class' => 'navbar-end'])
                         ->begin() ?>
-
+					
+					<?php 
+					   $item = [];
+					   if ($user->isGuest()) {
+					       array_push($item, ['label' => 'Login', 'url' => '/login']);
+					   } else {
+					       array_push($item, ['label' =>'Rubrica', 'url' => '/']);
+					       array_push($item, ['label' =>'Logout'.$user->getId(), 'url' => '/logout']);
+					   }
+					?>
                     <?= Nav::widget()
                         ->currentPath(
                             $urlMatcher->getCurrentUri() !== null
                                 ? $urlMatcher->getCurrentUri()->getPath()
                                 : ''
                         )
-                        ->items([
+                        ->items($item)
+                        /*->items([
                             ['label' =>'Rubrica', 'url' => '/'],
                             ['label' => 'Login', 'url' => '/login']
-                        ]) ?>
+                        ])*/ ?>
 
                     <?= NavBar::end() ?>
                 </div>
