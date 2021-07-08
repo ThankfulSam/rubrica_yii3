@@ -62,7 +62,7 @@ $this->addJsVars($assetManager->getJsVars());
 					       array_push($item, ['label' => 'Login', 'url' => '/login']);
 					   } else {
 					       array_push($item, ['label' =>'Rubrica', 'url' => '/']);
-					       array_push($item, ['label' =>'Logout'.$user->getId(), 'url' => '/logout']);
+					       array_push($item, ['label' =>'Logout '. '('. $user->getId() .')', 'url' => '/logout']);
 					   }
 					?>
                     <?= Nav::widget()

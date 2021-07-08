@@ -7,6 +7,8 @@ use App\ViewInjection\ContentViewInjection;
 use App\ViewInjection\LayoutViewInjection;
 use Yiisoft\Factory\Definition\Reference;
 use Yiisoft\Yii\View\CsrfViewInjection;
+use Cycle\Schema\Generator;
+use Spiral\Database\Database;
 
 return [
     'app' => [
@@ -29,6 +31,7 @@ return [
             '@vendor' => '@root/vendor',
             '@layout' => '@resources/views/layout',
             '@views' => '@resources/views',
+            '@entity' => '@root/src/Entity'
         ],
     ],
 
@@ -45,4 +48,5 @@ return [
             'hello' => Hello::class,
         ],
     ],
+    
 ];

@@ -12,25 +12,40 @@ use App\Form\LoginForm;
 use Yiisoft\Http\Method;
 use Yiisoft\Validator\Validator;
 use App\User\IdentityRepository;
-use Infection\Mutator\ReturnValue\This;
-use Yiisoft\User\Event\AfterLogin;
+use Spiral\Database\DatabaseManager;
 
 class SiteController
 {
+    
     private ViewRenderer $viewRenderer;
     private CurrentUser $user;
+    private DatabaseManager $dbal;
     
-    public function __construct(ViewRenderer $viewRenderer, CurrentUser $user)
+    public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, DatabaseManager $dbal)
     {
         $this->viewRenderer = $viewRenderer->withControllerName('site');
         $this->user = $user;
+        $this->dbal = $dbal;
     }
     
     public function index(): ResponseInterface
     {
+        
         $form = new LoginForm();
-        if (!$this->user->isGuest()){
+        /*if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index');
+        } else {
+            return $this->viewRenderer->render('login', [
+                'form' => $form
+            ]);
+        }*/
+        
+        $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+        
+        if (!$this->user->isGuest()){
+            return $this->viewRenderer->render('index_prova', [
+                'tab_contatti' => $tab_contatti
+            ]);
         } else {
             return $this->viewRenderer->render('login', [
                 'form' => $form
