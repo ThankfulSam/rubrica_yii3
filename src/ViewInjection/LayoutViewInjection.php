@@ -10,6 +10,7 @@ use Yiisoft\I18n\Locale;
 use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Router\UrlMatcherInterface;
 use Yiisoft\Yii\View\LayoutParametersInjectionInterface;
+use Yiisoft\User\CurrentUser;
 
 final class LayoutViewInjection implements LayoutParametersInjectionInterface
 {
@@ -17,11 +18,13 @@ final class LayoutViewInjection implements LayoutParametersInjectionInterface
     private AssetManager $assetManager;
     private Locale $locale;
     private UrlGeneratorInterface $urlGenerator;
+    private CurrentUser $user;
     private UrlMatcherInterface $urlMatcher;
 
     public function __construct(
         ApplicationParameters $applicationParameters,
         AssetManager $assetManager,
+        CurrentUser $user, 
         Locale $locale,
         UrlGeneratorInterface $urlGenerator,
         UrlMatcherInterface $urlMatcher
@@ -29,6 +32,7 @@ final class LayoutViewInjection implements LayoutParametersInjectionInterface
         $this->applicationParameters = $applicationParameters;
         $this->assetManager = $assetManager;
         $this->locale = $locale;
+        $this->user = $user;
         $this->urlGenerator = $urlGenerator;
         $this->urlMatcher = $urlMatcher;
     }
@@ -41,6 +45,7 @@ final class LayoutViewInjection implements LayoutParametersInjectionInterface
             'locale' => $this->locale,
             'urlGenerator' => $this->urlGenerator,
             'urlMatcher' => $this->urlMatcher,
+            'user' => $this->user
         ];
     }
 }

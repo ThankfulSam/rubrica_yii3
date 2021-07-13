@@ -7,7 +7,7 @@ namespace App;
 final class ApplicationParameters
 {
     private string $charset = 'UTF-8';
-    private string $name = 'My Project';
+    private string $name = 'Sam';
 
     public function getCharset(): string
     {

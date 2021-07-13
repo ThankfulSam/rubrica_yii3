@@ -18,6 +18,9 @@ return [
             'yiisoft/router-fastroute' => [
                 'common.php',
             ],
+            'yiisoft/yii-cycle' => [
+                'common.php',
+            ],
             'yiisoft/cache' => [
                 'common.php',
             ],
@@ -39,10 +42,10 @@ return [
             'yiisoft/aliases' => [
                 'common.php',
             ],
-            'yiisoft/router' => [
+            'yiisoft/validator' => [
                 'common.php',
             ],
-            'yiisoft/validator' => [
+            'yiisoft/router' => [
                 'common.php',
             ],
         ],
@@ -50,6 +53,9 @@ return [
             '/' => [
                 '$common',
                 'config/console/*.php',
+            ],
+            'yiisoft/yii-cycle' => [
+                'console.php',
             ],
             'yiisoft/yii-console' => [
                 'console.php',
@@ -73,6 +79,9 @@ return [
             '/' => [
                 '$events',
                 'config/events-console.php',
+            ],
+            'yiisoft/yii-cycle' => [
+                'events-console.php',
             ],
             'yiisoft/log' => [
                 'events-console.php',
@@ -121,7 +130,13 @@ return [
             'yiisoft/router-fastroute' => [
                 'params.php',
             ],
+            'yiisoft/user' => [
+                'params.php',
+            ],
             'yiisoft/yii-bulma' => [
+                'params.php',
+            ],
+            'yiisoft/yii-cycle' => [
                 'params.php',
             ],
             'yiisoft/yii-view' => [
@@ -186,6 +201,9 @@ return [
                 '$providers',
                 'config/providers-web.php',
             ],
+            'yiisoft/yii-cycle' => [
+                'providers-web.php',
+            ],
             'yiisoft/yii-debug-api' => [
                 'providers-web.php',
             ],
@@ -215,6 +233,9 @@ return [
                 'web.php',
             ],
             'yiisoft/router-fastroute' => [
+                'web.php',
+            ],
+            'yiisoft/user' => [
                 'web.php',
             ],
             'yiisoft/yii-bulma' => [
