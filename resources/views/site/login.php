@@ -30,5 +30,3 @@ use \Yiisoft\User\CurrentUser;
 <?= Html::submitButton('Login') ?>
 
 <?= Form::end() ?>
-
-

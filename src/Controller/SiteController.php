@@ -32,13 +32,6 @@ class SiteController
     {
         
         $form = new LoginForm();
-        /*if (!$this->user->isGuest()){
-            return $this->viewRenderer->render('index');
-        } else {
-            return $this->viewRenderer->render('login', [
-                'form' => $form
-            ]);
-        }*/
         
         $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
         
@@ -51,6 +44,15 @@ class SiteController
                 'form' => $form
             ]);
         }
+    }
+    
+    public function actionView($nome): ResponseInterface 
+    {
+        $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('nome', $nome);
+        
+        return $this->viewRenderer->render('view', [
+            'tab_contatti' => $tab_contatti
+        ]);
     }
     
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
