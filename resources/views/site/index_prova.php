@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Yiisoft\User\CurrentUser;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Button;
+use Yiisoft\Form\Widget\Form;
 
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
@@ -25,10 +26,8 @@ $this->setTitle($applicationParameters->getName());
             echo '<tr>';
             echo '<td>' . $tab['nome'] . '</td>';
             echo '<td>' . $tab['cognome'] . '</td>';
-            echo '<td>' .  Html::a('Visualizza!',) . '</td>';
+            echo '<td>' . Html::a('Visualizza!', $url->generate('site/view'), ['nome' => $tab['nome'], 'cognome' => $tab['cognome']]) . '</td>';
             echo '</tr>';
         }
         echo '</table>';
     ?>
-    
-</p>

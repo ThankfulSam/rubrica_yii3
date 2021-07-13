@@ -13,6 +13,7 @@ use Yiisoft\Http\Method;
 use Yiisoft\Validator\Validator;
 use App\User\IdentityRepository;
 use Spiral\Database\DatabaseManager;
+use PhpParser\Node\Expr\Isset_;
 
 class SiteController
 {
@@ -46,13 +47,21 @@ class SiteController
         }
     }
     
-    public function actionView($nome): ResponseInterface 
+    public function actionView(ServerRequestInterface $request): ResponseInterface 
     {
-        $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('nome', $nome);
         
+        $nome = $request->getAttribute('nome');
+        $cognome = $request->getAttribute('cognome');
+        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('nome', $nome)->fetchAll();
+        
+        if(!isset($nome)){
+            return $this->viewRenderer->render('index');
+        } else {
         return $this->viewRenderer->render('view', [
-            'tab_contatti' => $tab_contatti
+            'contatto' => $contatto
         ]);
+        }
+                
     }
     
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
