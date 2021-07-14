@@ -26,7 +26,7 @@ $this->setTitle($applicationParameters->getName());
             echo '<tr>';
             echo '<td>' . $tab['nome'] . '</td>';
             echo '<td>' . $tab['cognome'] . '</td>';
-            echo '<td>' . Html::a('Visualizza!', $url->generate('site/view'), ['nome' => $tab['nome'], 'cognome' => $tab['cognome']]) . '</td>';
+            echo '<td>' . Html::a('Visualizza!', $url->generate('site/view', ['id' => $tab['id']])) . '</td>';
             echo '</tr>';
         }
         echo '</table>';

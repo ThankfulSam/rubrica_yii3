@@ -49,19 +49,12 @@ class SiteController
     
     public function actionView(ServerRequestInterface $request): ResponseInterface 
     {
+        $id = $request->getQueryParams()['id'];
+        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('id', $id)->fetchAll();
         
-        $nome = $request->getAttribute('nome');
-        $cognome = $request->getAttribute('cognome');
-        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('nome', $nome)->fetchAll();
-        
-        if(!isset($nome)){
-            return $this->viewRenderer->render('index');
-        } else {
         return $this->viewRenderer->render('view', [
             'contatto' => $contatto
-        ]);
-        }
-                
+        ]);                
     }
     
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
