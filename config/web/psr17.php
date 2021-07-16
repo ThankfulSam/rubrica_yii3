@@ -19,6 +19,9 @@ use Yiisoft\Session\SessionInterface;
 use Yiisoft\Auth\IdentityRepositoryInterface;
 use Psr\Container\ContainerInterface;
 use App\User\IdentityRepository;
+use Yiisoft\Data\Reader\DataReaderInterface;
+use App\Reader\MyDataReader;
+use Yiisoft\Data\Reader\ReadableDataInterface;
 
 return [
     RequestFactoryInterface::class => RequestFactory::class,
@@ -30,4 +33,7 @@ return [
     
     //User
     IdentityRepositoryInterface::class => IdentityRepository::class,
+    
+    //DataReader
+    ReadableDataInterface::class => MyDataReader::class
 ];

@@ -30,6 +30,12 @@ return [
             'yiisoft/yii-event' => [
                 'common.php',
             ],
+            'yiisoft/translator-formatter-intl' => [
+                'common.php',
+            ],
+            'yiisoft/translator-message-php' => [
+                'common.php',
+            ],
             'yiisoft/yii-debug' => [
                 'common.php',
             ],
@@ -46,6 +52,9 @@ return [
                 'common.php',
             ],
             'yiisoft/router' => [
+                'common.php',
+            ],
+            'yiisoft/translator' => [
                 'common.php',
             ],
         ],
@@ -172,6 +181,9 @@ return [
             'yiisoft/aliases' => [
                 'params.php',
             ],
+            'yiisoft/translator' => [
+                'params.php',
+            ],
         ],
         'providers' => [
             '/' => [
@@ -239,6 +251,9 @@ return [
                 'web.php',
             ],
             'yiisoft/yii-bulma' => [
+                'web/*.php',
+            ],
+            'yiisoft/yii-dataview' => [
                 'web/*.php',
             ],
             'yiisoft/yii-view' => [
