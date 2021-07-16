@@ -5,6 +5,8 @@ use Yiisoft\User\CurrentUser;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Button;
 use Yiisoft\Form\Widget\Form;
+use Yiisoft\Yii\DataView\ListView;
+use Yiisoft\Data\Paginator\OffsetPaginator;
 
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
@@ -31,3 +33,8 @@ $this->setTitle($applicationParameters->getName());
         }
         echo '</table>';
     ?>
+<?php /*ListView::widget([
+    'paginator' => new OffsetPaginator($dataReader),
+]);
+      ListView::end();*/
+?>

@@ -15,6 +15,8 @@ use App\User\IdentityRepository;
 use Spiral\Database\DatabaseManager;
 use PhpParser\Node\Expr\Isset_;
 use App\Form\ContactForm;
+use Yiisoft\Data\Reader\DataReaderInterface;
+use Yiisoft\Data\Reader\ReadableDataInterface;
 
 class SiteController
 {
@@ -22,12 +24,15 @@ class SiteController
     private ViewRenderer $viewRenderer;
     private CurrentUser $user;
     private DatabaseManager $dbal;
+    private ReadableDataInterface $dri;
     
-    public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, DatabaseManager $dbal)
+    public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, 
+        DatabaseManager $dbal, ReadableDataInterface $dri)
     {
         $this->viewRenderer = $viewRenderer->withControllerName('site');
         $this->user = $user;
         $this->dbal = $dbal;
+        $this->dri = $dri;
     }
     
     public function index(): ResponseInterface
@@ -36,6 +41,7 @@ class SiteController
         $form = new LoginForm();
         
         $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+        print_r($tab_contatti);
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
@@ -104,7 +110,6 @@ class SiteController
         
         if($request->getMethod() === Method::POST) {
             $form->load($request->getParsedBody());
-            print_r($form->getNome());
             $this->dbal->database('default')->table('contatticonpreferiti')
             ->update(['nome' => $form->getNome(),
                 'cognome' => $form->getCognome(),
@@ -161,7 +166,7 @@ class SiteController
             $this->user->logout();
         }
             
-        return $this->viewRenderer->render('login', ['form' => $form ]);
+        return $this->viewRenderer->render('login', ['form' => $form]);
         
     }
     

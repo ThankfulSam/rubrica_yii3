@@ -26,7 +26,9 @@ echo 'preferito: '. $contatto[0]['preferito'] . '<br>';?>
     echo Html::a($str, $url->generate('site/setPreferred', ['id' => $contatto[0]['id']]));//, ['method' => 'POST']);
     echo '<br>';
     echo Html::a('update', $url->generate('site/update', ['id' => $contatto[0]['id']]));
-    
+    echo '<br>';
+    echo Html::a('home', $url->generate('home'), ['class' => 'button']);
+    //echo Html::button('home', ['href' => $url->generateAbsolute('home')]);
 ?>
 
 
