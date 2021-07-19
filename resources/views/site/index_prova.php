@@ -11,6 +11,7 @@ use Yiisoft\Data\Paginator\OffsetPaginator;
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
  *  @var \Yiisoft\Router\UrlGeneratorInterface $url
+ *  @var OffsetPaginator $paginator
  */
 
 $this->params['breadcrumbs'] = '/';
@@ -23,7 +24,7 @@ $this->setTitle($applicationParameters->getName());
 <p class="subtitle">Utente <strong><?php echo $user->getId(); ?></strong>!</p>
     
     <?php 
-        echo '<table class="center">';
+        /*echo '<table class="center">';
         foreach ($tab_contatti as $tab){
             echo '<tr>';
             echo '<td>' . $tab['nome'] . '</td>';
@@ -31,9 +32,7 @@ $this->setTitle($applicationParameters->getName());
             echo '<td>' . Html::a('Visualizza!', $url->generate('site/view', ['id' => $tab['id']])) . '</td>';
             echo '</tr>';
         }
-        echo '</table>';
+        echo '</table>';*/
     ?>
-<?php ListView::widget([
-      ])->paginator($paginator)->begin();
-      ListView::end();
+<?= ListView::widget()->paginator($paginator);
 ?>

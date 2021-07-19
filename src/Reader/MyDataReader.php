@@ -9,8 +9,9 @@ use Yiisoft\Data\Reader\Sort;
 use Yiisoft\Data\Reader\Filter\FilterInterface;
 use Yiisoft\Data\Reader\Filter\FilterProcessorInterface;
 use Yiisoft\Data\Reader\FilterableDataInterface;
+use Yiisoft\Data\Reader\CountableDataInterface;
 
-class MyDataReader implements DataReaderInterface, FilterableDataInterface
+class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, CountableDataInterface
 {
     
     public DatabaseManager $dbal;
@@ -24,24 +25,40 @@ class MyDataReader implements DataReaderInterface, FilterableDataInterface
 
     public function withLimit(int $limit):self
     {
-        $this->limit = $limit;
+        $result = clone $this;
+        $result->limit = $limit;
+        return $result;
     }
 
     public function read():iterable
     {
-        $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+        $tab_contatti = $this->dbal->database('default')
+            ->select()
+            ->from('contatticonpreferiti')
+            ->offset($this->offset)
+            ->limit($this->limit)
+            ->fetchAll();
+        
         return $tab_contatti;
     }
 
     public function readOne()
-    {}
+    {
+        $tab_contatti = $this->dbal->database('default')
+        ->select()
+        ->from('contatticonpreferiti')
+        ->offset($this->offset)
+        ->limit(1)
+        ->fetchAll();
+        
+        return current($tab_contatti);
+    }
     public function withOffset(int $offset): self
-    {}
-    public function getSort(): ?Sort
-    {}
-
-    public function getIterator()
-    {}
+    {
+        $result = clone $this;
+        $result->offset = $offset;
+        return $result;
+    }
 
     public function count(): int
     {
@@ -49,14 +66,6 @@ class MyDataReader implements DataReaderInterface, FilterableDataInterface
         return $num_entry;
     }
 
-    public function withSort(?Sort $sorting): self
-    {}
-
-    public function withFilterProcessors(FilterProcessorInterface ...$filterProcessors): self
-    {}
-
-    public function withFilter(FilterInterface $filter): self
-    {}
 
 
     

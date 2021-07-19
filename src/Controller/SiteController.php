@@ -17,6 +17,7 @@ use App\Form\ContactForm;
 use Yiisoft\Data\Reader\DataReaderInterface;
 use Yiisoft\Data\Reader\ReadableDataInterface;
 use Yiisoft\Data\Paginator\OffsetPaginator;
+use App\Reader\MyDataReader;
 
 class SiteController
 {
@@ -24,15 +25,13 @@ class SiteController
     private ViewRenderer $viewRenderer;
     private CurrentUser $user;
     private DatabaseManager $dbal;
-    private DataReaderInterface $dri;
     
     public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, 
-        DatabaseManager $dbal, DataReaderInterface $dri)
+        DatabaseManager $dbal)
     {
         $this->viewRenderer = $viewRenderer->withControllerName('site');
         $this->user = $user;
         $this->dbal = $dbal;
-        $this->dri = $dri;
     }
     
     public function index(): ResponseInterface
@@ -40,13 +39,10 @@ class SiteController
         
         $form = new LoginForm();
         
-        //$tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
-        $tab_contatti = $this->dri->read();
-        $paginator = new OffsetPaginator($this->dri);
+        $paginator = new OffsetPaginator(new MyDataReader($this->dbal));
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
-                'tab_contatti' => $tab_contatti,
                 'paginator' => $paginator
             ]);
         } else {
