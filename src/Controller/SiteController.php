@@ -41,7 +41,6 @@ class SiteController
         $form = new LoginForm();
         
         $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
-        //print_r($tab_contatti);
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
@@ -128,6 +127,45 @@ class SiteController
         $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('id', $request->getQueryParams()['id'])->fetchAll();
         $form->loadData(array_values($contatto[0]));
         return $this->viewRenderer->render('update', [
+            'form' => $form
+        ]);
+        
+    }
+    
+    /* METODO CHE PERMETTE L'INSERIMENTO DI UN NUOVO CONTATTO*/
+    
+    public function actionInsert(ServerRequestInterface $request)
+    {
+        $form = new ContactForm();
+        
+        if($request->getMethod() === Method::POST) {
+            $form->load($request->getParsedBody());
+            $this->dbal->database('default')->table('contatticonpreferiti')
+            ->insert()->values([
+                'id' => $form->getId(),
+                'nome' => $form->getNome(),
+                'cognome' => $form->getCognome(),
+                'telefono' => $form->getTelefono(),
+                'indirizzo' => $form->getIndirizzo(),
+                'preferito' => 0,
+                'user_id' => 5
+            ])
+            ->run();
+            
+            $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+            return $this->viewRenderer->render('index_prova', 
+                [
+                    'tab_contatti' => $tab_contatti
+                ]);
+        }
+        
+        $id = $this->dbal->database('default')->select()->from('contatticonpreferiti')->max('id');
+        $form->setAttribute('id', $id+1);
+        $form->setAttribute('nome', '');
+        $form->setAttribute('cognome', '');
+        $form->setAttribute('telefono', '');
+        $form->setAttribute('indirizzo', '');
+        return $this->viewRenderer->render('insert', [
             'form' => $form
         ]);
         

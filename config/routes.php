@@ -13,5 +13,5 @@ return [
     Route::methods([Method::GET, Method::POST], '/view')->action([SiteController::class, 'actionView'])->name('site/view'),
     Route::methods([Method::GET, Method::POST], '/setPreferred')->action([SiteController::class, 'actionSetPreferred'])->name('site/setPreferred'),
     Route::methods([Method::GET, Method::POST], '/update')->action([SiteController::class, 'actionUpdate'])->name('site/update'),
-    
+    Route::methods([Method::GET, Method::POST], '/insert')->action([SiteController::class, 'actionInsert'])->name('site/insert'),
 ];
