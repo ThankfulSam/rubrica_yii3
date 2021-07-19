@@ -65,9 +65,6 @@ class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, Co
         $num_entry = $this->dbal->database('default')->table('contatticonpreferiti')->count();
         return $num_entry;
     }
-
-
-
     
 
 }

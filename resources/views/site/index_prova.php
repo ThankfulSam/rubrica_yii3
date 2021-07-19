@@ -23,16 +23,16 @@ $this->setTitle($applicationParameters->getName());
 
 <p class="subtitle">Utente <strong><?php echo $user->getId(); ?></strong>!</p>
     
-    <?php 
-        /*echo '<table class="center">';
-        foreach ($tab_contatti as $tab){
-            echo '<tr>';
-            echo '<td>' . $tab['nome'] . '</td>';
-            echo '<td>' . $tab['cognome'] . '</td>';
-            echo '<td>' . Html::a('Visualizza!', $url->generate('site/view', ['id' => $tab['id']])) . '</td>';
-            echo '</tr>';
-        }
-        echo '</table>';*/
-    ?>
-<?= ListView::widget()->paginator($paginator);
+    
+<?= ListView::widget()
+        ->cssFramework(ListView::BULMA)
+        ->itemView(//'//_list_view_contact.php')
+            static fn ($contact_form) => 
+                '<div>' .
+                '<button>' . 
+                Html::a($contact_form['nome'].' '.$contact_form['cognome'], $url->generate('site/view', ['id' => $contact_form['id']])) .
+                '</button>' .
+                '</div>'
+        )
+        ->paginator($paginator);
 ?>

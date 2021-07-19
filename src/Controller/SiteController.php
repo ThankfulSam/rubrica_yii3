@@ -38,12 +38,14 @@ class SiteController
     {
         
         $form = new LoginForm();
+        $contact_form = new ContactForm();
         
         $paginator = new OffsetPaginator(new MyDataReader($this->dbal));
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
-                'paginator' => $paginator
+                'paginator' => $paginator,
+                'contact_form' => $contact_form
             ]);
         } else {
             return $this->viewRenderer->render('login', [
