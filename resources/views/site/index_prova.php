@@ -25,29 +25,19 @@ $this->setTitle($applicationParameters->getName());
     
 <?= ListView::widget()
         ->cssFramework(ListView::BULMA)
+        ->itemOptions(['tag' => 'table'])
         ->itemView(//'//_list_view_contact.php')
             static fn ($contact_form) => 
-                '<div>' .
-                '<button>' . 
+                '<tr >' .
+                //'<button>' . 
                 Html::a($contact_form['nome'].' '.$contact_form['cognome'], $url->generate('site/view', ['id' => $contact_form['id']])) .
-                '</button>' .
-                '</div>'
+                //'</button>' .
+                '</tr>'
         )
         ->paginator($paginator);
 ?>
 
-    <?php/* 
-        echo '<table class="center">';
-        foreach ($tab_contatti as $tab){
-            echo '<tr>';
-            echo '<td>' . $tab['nome'] . '</td>';
-            echo '<td>' . $tab['cognome'] . '</td>';
-            echo '<td><button>' . Html::a('Visualizza!', $url->generate('site/view', ['id' => $tab['id']])) . '</button></td>';
-            echo '</tr>';
-        }
-        echo '</table>';*/
-    ?>
-
 <br>
 <button><?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?></button>
+
 

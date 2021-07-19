@@ -4,12 +4,8 @@ namespace App\Reader;
 use Yiisoft\Data\Reader\ReadableDataInterface;
 use Spiral\Database\DatabaseManager;
 use Yiisoft\Data\Reader\OffsetableDataInterface;
-use Yiisoft\Data\Reader\DataReaderInterface;
-use Yiisoft\Data\Reader\Sort;
-use Yiisoft\Data\Reader\Filter\FilterInterface;
-use Yiisoft\Data\Reader\Filter\FilterProcessorInterface;
-use Yiisoft\Data\Reader\FilterableDataInterface;
 use Yiisoft\Data\Reader\CountableDataInterface;
+
 
 class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, CountableDataInterface
 {
@@ -37,6 +33,7 @@ class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, Co
             ->from('contatticonpreferiti')
             ->offset($this->offset)
             ->limit($this->limit)
+            ->orderBy('nome')
             ->fetchAll();
         
         return $tab_contatti;
@@ -65,6 +62,5 @@ class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, Co
         $num_entry = $this->dbal->database('default')->table('contatticonpreferiti')->count();
         return $num_entry;
     }
-    
 
 }

@@ -39,7 +39,6 @@ class SiteController
         
         $form = new LoginForm();
         $contact_form = new ContactForm();
-        
         $paginator = new OffsetPaginator(new MyDataReader($this->dbal));
         
         if (!$this->user->isGuest()){
@@ -138,6 +137,9 @@ class SiteController
     public function actionInsert(ServerRequestInterface $request)
     {
         $form = new ContactForm();
+        $contact_form = new ContactForm();
+        
+        $paginator = new OffsetPaginator(new MyDataReader($this->dbal));
         
         if($request->getMethod() === Method::POST) {
             $form->load($request->getParsedBody());
@@ -156,7 +158,8 @@ class SiteController
             $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
             return $this->viewRenderer->render('index_prova', 
                 [
-                    'tab_contatti' => $tab_contatti
+                    'paginator' => $paginator,
+                    'contact_form' => $contact_form
                 ]);
         }
         
@@ -176,6 +179,9 @@ class SiteController
     
     public function actionDelete(ServerRequestInterface $request)
     {
+        $contact_form = new ContactForm();
+        $paginator = new OffsetPaginator(new MyDataReader($this->dbal));
+        
         if (isset($request->getQueryParams()['id'])){
             $id = $request->getQueryParams()['id'];
             $this->dbal->database('default')
@@ -187,7 +193,8 @@ class SiteController
         
         $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
         return $this->viewRenderer->render('index_prova', [
-            'tab_contatti' => $contatto
+            'paginator' => $paginator,
+            'contact_form' => $contact_form
         ]);
     }
     
