@@ -171,6 +171,25 @@ class SiteController
         
     }
     
+    /* METODO CHE PERMETTE LA RIMOZIONE DI UN CONTATTO*/
+    
+    public function actionDelete(ServerRequestInterface $request)
+    {
+        if (isset($request->getQueryParams()['id'])){
+            $id = $request->getQueryParams()['id'];
+            $this->dbal->database('default')
+                ->table('contatticonpreferiti')
+                ->delete()
+                ->where('id', $id)
+                ->run();
+        }
+        
+        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+        return $this->viewRenderer->render('index_prova', [
+            'tab_contatti' => $contatto
+        ]);
+    }
+    
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
         IdentityRepository $identityRepository): ResponseInterface
         {

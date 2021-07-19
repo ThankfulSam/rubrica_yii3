@@ -11,6 +11,7 @@ use Yiisoft\Html\Html;
 
 <h1><b><?= $user->getId()?>, stai visualizzando un singolo contatto</b></h1>
 <br>
+
 <?php echo $contatto[0]['nome'] . '<br>';
 echo $contatto[0]['cognome'] . '<br>';
 echo $contatto[0]['telefono'] . '<br>';
@@ -26,6 +27,8 @@ echo 'preferito: '. $contatto[0]['preferito'] . '<br>';?>
     echo Html::a($str, $url->generate('site/setPreferred', ['id' => $contatto[0]['id']]));//, ['method' => 'POST']);
     echo '<br>';
     echo Html::a('update', $url->generate('site/update', ['id' => $contatto[0]['id']]));
+    echo '<br>';
+    echo Html::a('delete', $url->generate('site/delete', ['id' => $contatto[0]['id']]), ['onclick' => 'return confirm(\'Sei sicuro di voler eliminare questo contatto?\')']);
     echo '<br>';
     echo Html::a('home', $url->generate('home'), ['class' => 'button']);
     //echo Html::button('home', ['href' => $url->generateAbsolute('home')]);
