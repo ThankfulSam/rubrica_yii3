@@ -41,7 +41,7 @@ class SiteController
         $form = new LoginForm();
         
         $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
-        print_r($tab_contatti);
+        //print_r($tab_contatti);
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
