@@ -133,6 +133,64 @@ class SiteController
         
     }
     
+    /* METODO CHE PERMETTE L'INSERIMENTO DI UN NUOVO CONTATTO*/
+    
+    public function actionInsert(ServerRequestInterface $request)
+    {
+        $form = new ContactForm();
+        
+        if($request->getMethod() === Method::POST) {
+            $form->load($request->getParsedBody());
+            $this->dbal->database('default')->table('contatticonpreferiti')
+            ->insert()->values([
+                'id' => $form->getId(),
+                'nome' => $form->getNome(),
+                'cognome' => $form->getCognome(),
+                'telefono' => $form->getTelefono(),
+                'indirizzo' => $form->getIndirizzo(),
+                'preferito' => 0,
+                'user_id' => 5
+            ])
+            ->run();
+            
+            $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+            return $this->viewRenderer->render('index_prova', 
+                [
+                    'tab_contatti' => $tab_contatti
+                ]);
+        }
+        
+        $id = $this->dbal->database('default')->select()->from('contatticonpreferiti')->max('id');
+        $form->setAttribute('id', $id+1);
+        $form->setAttribute('nome', '');
+        $form->setAttribute('cognome', '');
+        $form->setAttribute('telefono', '');
+        $form->setAttribute('indirizzo', '');
+        return $this->viewRenderer->render('insert', [
+            'form' => $form
+        ]);
+        
+    }
+    
+    /* METODO CHE PERMETTE LA RIMOZIONE DI UN CONTATTO*/
+    
+    public function actionDelete(ServerRequestInterface $request)
+    {
+        if (isset($request->getQueryParams()['id'])){
+            $id = $request->getQueryParams()['id'];
+            $this->dbal->database('default')
+                ->table('contatticonpreferiti')
+                ->delete()
+                ->where('id', $id)
+                ->run();
+        }
+        
+        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+        return $this->viewRenderer->render('index_prova', [
+            'tab_contatti' => $contatto
+        ]);
+    }
+    
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
         IdentityRepository $identityRepository): ResponseInterface
         {

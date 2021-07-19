@@ -23,7 +23,6 @@ $this->setTitle($applicationParameters->getName());
 
 <p class="subtitle">Utente <strong><?php echo $user->getId(); ?></strong>!</p>
     
-    
 <?= ListView::widget()
         ->cssFramework(ListView::BULMA)
         ->itemView(//'//_list_view_contact.php')
@@ -36,3 +35,19 @@ $this->setTitle($applicationParameters->getName());
         )
         ->paginator($paginator);
 ?>
+
+    <?php/* 
+        echo '<table class="center">';
+        foreach ($tab_contatti as $tab){
+            echo '<tr>';
+            echo '<td>' . $tab['nome'] . '</td>';
+            echo '<td>' . $tab['cognome'] . '</td>';
+            echo '<td><button>' . Html::a('Visualizza!', $url->generate('site/view', ['id' => $tab['id']])) . '</button></td>';
+            echo '</tr>';
+        }
+        echo '</table>';*/
+    ?>
+
+<br>
+<button><?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?></button>
+
