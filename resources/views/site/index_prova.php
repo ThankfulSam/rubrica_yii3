@@ -11,6 +11,7 @@ use Yiisoft\Data\Paginator\OffsetPaginator;
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
  *  @var \Yiisoft\Router\UrlGeneratorInterface $url
+ *  @var OffsetPaginator $paginator
  */
 
 $this->params['breadcrumbs'] = '/';
@@ -22,7 +23,20 @@ $this->setTitle($applicationParameters->getName());
 
 <p class="subtitle">Utente <strong><?php echo $user->getId(); ?></strong>!</p>
     
-    <?php 
+<?= ListView::widget()
+        ->cssFramework(ListView::BULMA)
+        ->itemView(//'//_list_view_contact.php')
+            static fn ($contact_form) => 
+                '<div>' .
+                '<button>' . 
+                Html::a($contact_form['nome'].' '.$contact_form['cognome'], $url->generate('site/view', ['id' => $contact_form['id']])) .
+                '</button>' .
+                '</div>'
+        )
+        ->paginator($paginator);
+?>
+
+    <?php/* 
         echo '<table class="center">';
         foreach ($tab_contatti as $tab){
             echo '<tr>';
@@ -31,12 +45,9 @@ $this->setTitle($applicationParameters->getName());
             echo '<td><button>' . Html::a('Visualizza!', $url->generate('site/view', ['id' => $tab['id']])) . '</button></td>';
             echo '</tr>';
         }
-        echo '</table>';
+        echo '</table>';*/
     ?>
-<?php /*ListView::widget([
-    'paginator' => new OffsetPaginator($dataReader),
-]);
-      ListView::end();*/
-?>
+
 <br>
 <button><?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?></button>
+

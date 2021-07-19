@@ -13,10 +13,11 @@ use Yiisoft\Http\Method;
 use Yiisoft\Validator\Validator;
 use App\User\IdentityRepository;
 use Spiral\Database\DatabaseManager;
-use PhpParser\Node\Expr\Isset_;
 use App\Form\ContactForm;
 use Yiisoft\Data\Reader\DataReaderInterface;
 use Yiisoft\Data\Reader\ReadableDataInterface;
+use Yiisoft\Data\Paginator\OffsetPaginator;
+use App\Reader\MyDataReader;
 
 class SiteController
 {
@@ -24,27 +25,27 @@ class SiteController
     private ViewRenderer $viewRenderer;
     private CurrentUser $user;
     private DatabaseManager $dbal;
-    private ReadableDataInterface $dri;
     
     public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, 
-        DatabaseManager $dbal, ReadableDataInterface $dri)
+        DatabaseManager $dbal)
     {
         $this->viewRenderer = $viewRenderer->withControllerName('site');
         $this->user = $user;
         $this->dbal = $dbal;
-        $this->dri = $dri;
     }
     
     public function index(): ResponseInterface
     {
         
         $form = new LoginForm();
+        $contact_form = new ContactForm();
         
-        $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+        $paginator = new OffsetPaginator(new MyDataReader($this->dbal));
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
-                'tab_contatti' => $tab_contatti
+                'paginator' => $paginator,
+                'contact_form' => $contact_form
             ]);
         } else {
             return $this->viewRenderer->render('login', [

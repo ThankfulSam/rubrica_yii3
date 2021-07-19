@@ -14,14 +14,9 @@ use Psr\Http\Message\ServerRequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use Yiisoft\Session\Session;
-use Yiisoft\Session\SessionInterface;
 use Yiisoft\Auth\IdentityRepositoryInterface;
-use Psr\Container\ContainerInterface;
 use App\User\IdentityRepository;
-use Yiisoft\Data\Reader\DataReaderInterface;
-use App\Reader\MyDataReader;
-use Yiisoft\Data\Reader\ReadableDataInterface;
+
 
 return [
     RequestFactoryInterface::class => RequestFactory::class,
@@ -35,5 +30,7 @@ return [
     IdentityRepositoryInterface::class => IdentityRepository::class,
     
     //DataReader
-    ReadableDataInterface::class => MyDataReader::class
+    //DataReaderInterface::class => MyDataReader::class,
+    //FilterInterface::class => \App\Reader\MyFiltro::class,
+    //FilterProcessorInterface::class => \App\Reader\MyFiltroProcessor::class,
 ];
