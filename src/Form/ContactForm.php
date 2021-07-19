@@ -11,7 +11,7 @@ class ContactForm extends FormModel
     private string $telefono;
     private string $indirizzo;
     private int $preferito;
-    private int $user_id;
+    protected int $user_id;
     
     public function getId() {
         return $this->id;
@@ -35,6 +35,14 @@ class ContactForm extends FormModel
     
     public function getPreferito() {
         return $this->preferito;
+    }
+    
+    public function getUserId(){
+        return $this->user_id;
+    }
+    
+    public function setUserId(int $user_id){
+        $this->user_id = $user_id;
     }
     
     public function loadData(array $array) {

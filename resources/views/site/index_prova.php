@@ -28,7 +28,7 @@ $this->setTitle($applicationParameters->getName());
             echo '<tr>';
             echo '<td>' . $tab['nome'] . '</td>';
             echo '<td>' . $tab['cognome'] . '</td>';
-            echo '<td>' . Html::a('Visualizza!', $url->generate('site/view', ['id' => $tab['id']])) . '</td>';
+            echo '<td><button>' . Html::a('Visualizza!', $url->generate('site/view', ['id' => $tab['id']])) . '</button></td>';
             echo '</tr>';
         }
         echo '</table>';
@@ -38,3 +38,5 @@ $this->setTitle($applicationParameters->getName());
 ]);
       ListView::end();*/
 ?>
+<br>
+<button><?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?></button>
