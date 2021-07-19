@@ -13,10 +13,10 @@ use Yiisoft\Http\Method;
 use Yiisoft\Validator\Validator;
 use App\User\IdentityRepository;
 use Spiral\Database\DatabaseManager;
-use PhpParser\Node\Expr\Isset_;
 use App\Form\ContactForm;
 use Yiisoft\Data\Reader\DataReaderInterface;
 use Yiisoft\Data\Reader\ReadableDataInterface;
+use Yiisoft\Data\Paginator\OffsetPaginator;
 
 class SiteController
 {
@@ -24,10 +24,10 @@ class SiteController
     private ViewRenderer $viewRenderer;
     private CurrentUser $user;
     private DatabaseManager $dbal;
-    private ReadableDataInterface $dri;
+    private DataReaderInterface $dri;
     
     public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, 
-        DatabaseManager $dbal, ReadableDataInterface $dri)
+        DatabaseManager $dbal, DataReaderInterface $dri)
     {
         $this->viewRenderer = $viewRenderer->withControllerName('site');
         $this->user = $user;
@@ -40,12 +40,14 @@ class SiteController
         
         $form = new LoginForm();
         
-        $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
-        print_r($tab_contatti);
+        //$tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+        $tab_contatti = $this->dri->read();
+        $paginator = new OffsetPaginator($this->dri);
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
-                'tab_contatti' => $tab_contatti
+                'tab_contatti' => $tab_contatti,
+                'paginator' => $paginator
             ]);
         } else {
             return $this->viewRenderer->render('login', [

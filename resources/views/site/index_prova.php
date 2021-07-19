@@ -33,8 +33,7 @@ $this->setTitle($applicationParameters->getName());
         }
         echo '</table>';
     ?>
-<?php /*ListView::widget([
-    'paginator' => new OffsetPaginator($dataReader),
-]);
-      ListView::end();*/
+<?php ListView::widget([
+      ])->paginator($paginator)->begin();
+      ListView::end();
 ?>
