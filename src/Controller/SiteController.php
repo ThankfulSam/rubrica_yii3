@@ -39,7 +39,7 @@ class SiteController
         
         $form = new LoginForm();
         $contact_form = new ContactForm();
-        $paginator = new OffsetPaginator(new MyDataReader($this->dbal));
+        $paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
@@ -57,7 +57,7 @@ class SiteController
     {
         if (isset($request->getQueryParams()['id'])){
             $id = $request->getQueryParams()['id'];
-            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('id', $id)->fetchAll();
+            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $id)->fetchAll();
             
             return $this->viewRenderer->render('view', [
                 'contatto' => $contatto
@@ -78,19 +78,19 @@ class SiteController
             
             $id = $request->getQueryParams()['id'];
             
-            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('id', $id)->fetchAll();
+            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $id)->fetchAll();
             if ($contatto[0]['preferito']){
-                $this->dbal->database('default')->table('contatticonpreferiti')
+                $this->dbal->database('default')->table('contatticonpreferitiyii3')
                 ->update(['preferito' => '0'])
                 ->where('id', $id)
                 ->run();
             } else {
-                $this->dbal->database('default')->table('contatticonpreferiti')
+                $this->dbal->database('default')->table('contatticonpreferitiyii3')
                 ->update(['preferito' => '1'])
                 ->where('id', $id)
                 ->run();
             }
-            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('id', $id)->fetchAll();
+            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $id)->fetchAll();
             
             return $this->viewRenderer->render('view', [
                 'contatto' => $contatto
@@ -109,7 +109,7 @@ class SiteController
         
         if($request->getMethod() === Method::POST) {
             $form->load($request->getParsedBody());
-            $this->dbal->database('default')->table('contatticonpreferiti')
+            $this->dbal->database('default')->table('contatticonpreferitiyii3')
             ->update(['nome' => $form->getNome(),
                 'cognome' => $form->getCognome(),
                 'telefono' => $form->getTelefono(),
@@ -118,13 +118,13 @@ class SiteController
             ->where('id', $form->getId())
             ->run();
             
-            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('id', $form->getId())->fetchAll();
+            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $form->getId())->fetchAll();
             return $this->viewRenderer->render('view', [
                 'contatto' => $contatto
             ]);
         }
         
-        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->where('id', $request->getQueryParams()['id'])->fetchAll();
+        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $request->getQueryParams()['id'])->fetchAll();
         $form->loadData(array_values($contatto[0]));
         return $this->viewRenderer->render('update', [
             'form' => $form
@@ -139,11 +139,11 @@ class SiteController
         $form = new ContactForm();
         $contact_form = new ContactForm();
         
-        $paginator = new OffsetPaginator(new MyDataReader($this->dbal));
+        $paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
         
         if($request->getMethod() === Method::POST) {
             $form->load($request->getParsedBody());
-            $this->dbal->database('default')->table('contatticonpreferiti')
+            $this->dbal->database('default')->table('contatticonpreferitiyii3')
             ->insert()->values([
                 'id' => $form->getId(),
                 'nome' => $form->getNome(),
@@ -151,11 +151,11 @@ class SiteController
                 'telefono' => $form->getTelefono(),
                 'indirizzo' => $form->getIndirizzo(),
                 'preferito' => 0,
-                'user_id' => 5
+                'user_id' => (int)$this->user->getId(),
             ])
             ->run();
             
-            $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+            $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->fetchAll();
             return $this->viewRenderer->render('index_prova', 
                 [
                     'paginator' => $paginator,
@@ -163,7 +163,7 @@ class SiteController
                 ]);
         }
         
-        $id = $this->dbal->database('default')->select()->from('contatticonpreferiti')->max('id');
+        $id = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->max('id');
         $form->setAttribute('id', $id+1);
         $form->setAttribute('nome', '');
         $form->setAttribute('cognome', '');
@@ -180,18 +180,18 @@ class SiteController
     public function actionDelete(ServerRequestInterface $request)
     {
         $contact_form = new ContactForm();
-        $paginator = new OffsetPaginator(new MyDataReader($this->dbal));
+        $paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
         
         if (isset($request->getQueryParams()['id'])){
             $id = $request->getQueryParams()['id'];
             $this->dbal->database('default')
-                ->table('contatticonpreferiti')
+                ->table('contatticonpreferitiyii3')
                 ->delete()
                 ->where('id', $id)
                 ->run();
         }
         
-        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferiti')->fetchAll();
+        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->fetchAll();
         return $this->viewRenderer->render('index_prova', [
             'paginator' => $paginator,
             'contact_form' => $contact_form
@@ -207,7 +207,7 @@ class SiteController
                 $form->load($request->getParsedBody());
                 $validator->validate($form);
                 
-                $identity = $identityRepository->accessCheck($form->getId(), $form->getPassword());
+                $identity = $identityRepository->accessCheck($form->getUsername(), $form->getPassword(), $this->dbal);
                 if ($identity != null){
                     $this->user->login($identity);
                 }

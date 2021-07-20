@@ -4,6 +4,7 @@ use Yiisoft\Form\Widget\Field;
 use Yiisoft\Form\Widget\Form;
 use Yiisoft\Html\Html;
 use \Yiisoft\User\CurrentUser;
+use Yiisoft\Security\PasswordHasher;
 
 /* @var \App\Form\LoginForm $form */
 /* @var string $csrf */
@@ -12,11 +13,12 @@ use \Yiisoft\User\CurrentUser;
 ?>
 
 
-<?php if (!empty($form->getId())): ?>
+<?php if (!empty($form->getUsername())): ?>
     <div class="notification is-danger">
-        <?= Html::encode('id o password errati') ?>
+        <?= Html::encode('username e/o password errati') ?>
     </div>
 <?php endif ?>
+
 <h1 class="title">Login!</h1>
 <?= Form::widget()
     ->action($url->generate('site/login'))
@@ -25,9 +27,10 @@ use \Yiisoft\User\CurrentUser;
     ])
     ->begin() ?>
 
-<?= Field::widget()->config($form, 'id'); ?>
+<?= Field::widget()->config($form, 'username'); ?>
 <?= Field::widget()->config($form, 'password')->passwordInput(); ?>
 
 <?= Html::submitButton('Login') ?>
 
 <?= Form::end() ?>
+

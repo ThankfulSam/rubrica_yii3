@@ -5,6 +5,7 @@ use Yiisoft\Data\Reader\ReadableDataInterface;
 use Spiral\Database\DatabaseManager;
 use Yiisoft\Data\Reader\OffsetableDataInterface;
 use Yiisoft\Data\Reader\CountableDataInterface;
+use Yiisoft\User\CurrentUser;
 
 
 class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, CountableDataInterface
@@ -13,10 +14,12 @@ class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, Co
     public DatabaseManager $dbal;
     public int $limit;
     public int $offset;
+    private CurrentUser $user;
     
-    public function __construct(DatabaseManager $dbal)
+    public function __construct(DatabaseManager $dbal, CurrentUser $user)
     {
         $this->dbal = $dbal;
+        $this->user = $user;
     }
 
     public function withLimit(int $limit):self
@@ -30,9 +33,10 @@ class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, Co
     {
         $tab_contatti = $this->dbal->database('default')
             ->select()
-            ->from('contatticonpreferiti')
+            ->from('contatticonpreferitiyii3')
             ->offset($this->offset)
             ->limit($this->limit)
+            ->where('user_id', (int)$this->user->getId())
             ->orderBy('nome')
             ->fetchAll();
         
@@ -43,8 +47,9 @@ class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, Co
     {
         $tab_contatti = $this->dbal->database('default')
         ->select()
-        ->from('contatticonpreferiti')
+        ->from('contatticonpreferitiyii3')
         ->offset($this->offset)
+        ->where('user_id', (int)$this->user->getId())
         ->limit(1)
         ->fetchAll();
         
@@ -59,7 +64,7 @@ class MyDataReader implements ReadableDataInterface, OffsetableDataInterface, Co
 
     public function count(): int
     {
-        $num_entry = $this->dbal->database('default')->table('contatticonpreferiti')->count();
+        $num_entry = $this->dbal->database('default')->table('contatticonpreferitiyii3')->where('user_id', (int)$this->user->getId())->count();
         return $num_entry;
     }
 

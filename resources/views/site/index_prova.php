@@ -53,7 +53,7 @@ $this->setTitle($applicationParameters->getName());
             /*[
                 'class' => DataColumn::class,
                 'attribute()' => ['nome'],
-                'label()' => ['Nome'],
+                'label()' => ['Nome'],  
                 'value()' => static function ($contact_form) {
                       return $contact_form['nome'] === 'Nico'
                              ? '(prova)' : $contact_form['nome'];
