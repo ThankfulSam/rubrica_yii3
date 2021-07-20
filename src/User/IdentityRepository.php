@@ -5,6 +5,8 @@ namespace App\User;
 use App\User\Identity;
 use \Yiisoft\Auth\IdentityInterface;
 use \Yiisoft\Auth\IdentityRepositoryInterface;
+use Spiral\Database\DatabaseManager;
+use Yiisoft\Security\PasswordHasher;
 
 final class IdentityRepository implements IdentityRepositoryInterface
 {
@@ -19,6 +21,7 @@ final class IdentityRepository implements IdentityRepositoryInterface
         ],
     ];
     
+    
     public function findIdentity(string $id) : ?IdentityInterface
     {
         foreach (self::USERS as $user) {
@@ -30,27 +33,18 @@ final class IdentityRepository implements IdentityRepositoryInterface
         return null;
     }
     
-    public function accessCheck(string $id, string $password) : ?IdentityInterface
+    public function accessCheck(string $username, string $password, DatabaseManager $dbal) : ?IdentityInterface
     {
-        foreach (self::USERS as $user) {
-            if ((string)$user['id'] === $id && (string)$user['password'] === $password) {
-                return new Identity($id);
-            }
-        }
         
-        return null;
-    }
-    
-    /*public function findIdentityByToken(string $token, string $type) : ?IdentityInterface
-    {
-        foreach (self::USERS as $user) {
-            if ($user['token'] === $token) {
+        $users = $dbal->database('default')->select()->from('users')->fetchAll();
+        $pass = new PasswordHasher();
+        foreach ($users as $user) {
+            if ((string)$user['username'] === $username && $pass->validate($password, (string)$user['password'])) {
                 return new Identity((string)$user['id']);
             }
         }
         
         return null;
-    }*/
-    
+    }    
     
 }

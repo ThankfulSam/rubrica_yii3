@@ -6,12 +6,12 @@ use Yiisoft\Validator\Rule\Required;
 
 class LoginForm extends FormModel
 {
-    private string $id = '';
+    private string $username = '';
     private string $password = '';
     
-    public function getId(): string
+    public function getUsername(): string
     {
-        return $this->id;
+        return $this->username;
     }
     
     public function getPassword(): string
@@ -22,7 +22,7 @@ class LoginForm extends FormModel
     public function attributeLabels(): array 
     {
         return [
-            'id' => 'Id',
+            'username' => 'Username',
             'password' => 'Password'
         ];
     }
@@ -30,7 +30,7 @@ class LoginForm extends FormModel
     public function getRules(): array 
     {
         return [
-            'id' => [Required::rule()],
+            'username' => [Required::rule()],
             'password' => [Required::rule()],
         ];
     }
