@@ -14,10 +14,11 @@ use Yiisoft\Validator\Validator;
 use App\User\IdentityRepository;
 use Spiral\Database\DatabaseManager;
 use App\Form\ContactForm;
-use Yiisoft\Data\Reader\DataReaderInterface;
-use Yiisoft\Data\Reader\ReadableDataInterface;
 use Yiisoft\Data\Paginator\OffsetPaginator;
 use App\Reader\MyDataReader;
+use App\Form\SignupForm;
+use function PHPUnit\Framework\equalTo;
+use Yiisoft\Security\PasswordHasher;
 
 class SiteController
 {
@@ -233,6 +234,64 @@ class SiteController
             
         return $this->viewRenderer->render('login', ['form' => $form]);
         
+    }
+    
+    
+    /* METODO CHE PERMETTE LA REGISTRAZIONE DI UN NUOVO UTENTE*/
+    public function actionSignup(ServerRequestInterface $request, Validator $validator) {
+        $signup_form = new SignupForm();
+        $form = new LoginForm();
+        $pass = new PasswordHasher();
+        
+        if($request->getMethod() === Method::POST){
+            $signup_form->load($request->getParsedBody());
+            $validator->validate($signup_form);
+            
+            // PASSWORD NON COINCIDENTI
+            if($signup_form->getPassword() != $signup_form->getRepeatPassword()){
+                return $this->viewRenderer->render('signup', [
+                    'error' => 'Le password inserite devono coincidere',
+                    'signup_form' => $signup_form
+                ]);
+            } 
+            // USERNAME GIA' ESISTENTE
+            elseif ($this->userAlreadyExist($signup_form->getUsername())) {
+                return $this->viewRenderer->render('signup', [
+                    'error' => 'Username gia\' esistente',
+                    'signup_form' => $signup_form
+                ]);
+            } 
+            // REGISTRAZIONE DEL NUOVO UTENTE
+            else {
+                $this->dbal->database('default')->insert('users')
+                ->values([
+                    'username' => $signup_form->getUsername(),
+                    'password' => $pass->hash($signup_form->getPassword()),
+                ])
+                ->run();
+                
+                return $this->viewRenderer->render('login', [
+                    'error' => 'Registrazione avvenuta con successo!',
+                    'form' => $form
+                ]);
+            }
+        }
+        
+        return $this->viewRenderer->render('signup', [
+            'signup_form' => $signup_form
+        ]);
+    }
+    
+    /* METODO CHE VERIFICA LA NON ESISTENZA DI UN UTENTE CON IL NOME SPECIFICATO NEL SIGNUP*/
+    private function userAlreadyExist(string $username): bool 
+    {
+        $contatto = $this->dbal->database('default')->select()->from('users')->where('username', $username)->fetchAll();
+        print_r($contatto);
+        if(empty($contatto)){
+            return false;
+        }
+        
+        return true;
     }
     
 }

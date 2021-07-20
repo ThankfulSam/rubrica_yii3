@@ -15,4 +15,5 @@ return [
     Route::methods([Method::GET, Method::POST], '/update')->action([SiteController::class, 'actionUpdate'])->name('site/update'),
     Route::methods([Method::GET, Method::POST], '/insert')->action([SiteController::class, 'actionInsert'])->name('site/insert'),
     Route::methods([Method::GET, Method::POST], '/delete')->action([SiteController::class, 'actionDelete'])->name('site/delete'),
+    Route::methods([Method::GET, Method::POST], '/signup')->action([SiteController::class, 'actionSignup'])->name('site/signup'),
 ];

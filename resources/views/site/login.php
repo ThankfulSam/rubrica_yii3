@@ -3,8 +3,6 @@
 use Yiisoft\Form\Widget\Field;
 use Yiisoft\Form\Widget\Form;
 use Yiisoft\Html\Html;
-use \Yiisoft\User\CurrentUser;
-use Yiisoft\Security\PasswordHasher;
 
 /* @var \App\Form\LoginForm $form */
 /* @var string $csrf */
@@ -16,6 +14,12 @@ use Yiisoft\Security\PasswordHasher;
 <?php if (!empty($form->getUsername())): ?>
     <div class="notification is-danger">
         <?= Html::encode('username e/o password errati') ?>
+    </div>
+<?php endif ?>
+
+<?php if (!empty($error)): ?>
+    <div class="notification is-success">
+        <?= Html::encode($error) ?>
     </div>
 <?php endif ?>
 
@@ -33,4 +37,5 @@ use Yiisoft\Security\PasswordHasher;
 <?= Html::submitButton('Login') ?>
 
 <?= Form::end() ?>
-
+<br>
+<?= 'Non sei ancora iscritto? Clicca ' . '<button>' . Html::a('qui', $url->generate('site/signup')) . '</button>'; ?>
