@@ -53,10 +53,10 @@ $this->setTitle($applicationParameters->getName());
             /*[
                 'class' => DataColumn::class,
                 'attribute()' => ['nome'],
-                'label()' => ['Nome'],  
+                'label()' => ['Nome'],
                 'value()' => static function ($contact_form) {
-                      return $contact_form['nome'] === 'Nico'
-                             ? '(prova)' : $contact_form['nome'];
+                      return $contact_form['nome'] === 'samu'
+                        ? ['prova'] : $contact_form['nome'];
                 },
             ],*/
             'nome','cognome', 'preferito'
@@ -65,6 +65,6 @@ $this->setTitle($applicationParameters->getName());
 ?>
 
 <br>
-<button><?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?></button>
-
-
+<button>
+	<?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?>
+</button>
