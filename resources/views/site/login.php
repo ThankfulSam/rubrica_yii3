@@ -4,6 +4,7 @@ use Yiisoft\Form\Widget\Field;
 use Yiisoft\Form\Widget\Form;
 use Yiisoft\Html\Html;
 use \Yiisoft\User\CurrentUser;
+use Yiisoft\Security\PasswordHasher;
 
 /* @var \App\Form\LoginForm $form */
 /* @var string $csrf */
@@ -32,3 +33,4 @@ use \Yiisoft\User\CurrentUser;
 <?= Html::submitButton('Login') ?>
 
 <?= Form::end() ?>
+

@@ -10,7 +10,7 @@ use Yiisoft\Security\PasswordHasher;
 
 final class IdentityRepository implements IdentityRepositoryInterface
 {
-    private const USERS = [
+    /*private const USERS = [
         [
             'id' => 'samu',
             'password' => 'samuelemillucci'
@@ -19,12 +19,17 @@ final class IdentityRepository implements IdentityRepositoryInterface
             'id' => 42,
             'password' => '54321'
         ],
-    ];
+    ];*/
     
+    private $users;
+    
+    public function __construct(DatabaseManager $dbal){
+        $this->users = $dbal->database('default')->select()->from('users')->fetchAll();
+    }
     
     public function findIdentity(string $id) : ?IdentityInterface
     {
-        foreach (self::USERS as $user) {
+        foreach ($this->users as $user) {
             if ((string)$user['id'] === $id) {
                 return new Identity($id);
             }
@@ -36,9 +41,8 @@ final class IdentityRepository implements IdentityRepositoryInterface
     public function accessCheck(string $username, string $password, DatabaseManager $dbal) : ?IdentityInterface
     {
         
-        $users = $dbal->database('default')->select()->from('users')->fetchAll();
         $pass = new PasswordHasher();
-        foreach ($users as $user) {
+        foreach ($this->users as $user) {
             if ((string)$user['username'] === $username && $pass->validate($password, (string)$user['password'])) {
                 return new Identity((string)$user['id']);
             }
