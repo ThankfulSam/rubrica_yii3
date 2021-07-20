@@ -14,7 +14,7 @@ use \Yiisoft\User\CurrentUser;
 
 <?php if (!empty($form->getId())): ?>
     <div class="notification is-danger">
-        <?= Html::encode('id errato') ?>
+        <?= Html::encode('id o password errati') ?>
     </div>
 <?php endif ?>
 <h1 class="title">Login!</h1>
@@ -25,7 +25,8 @@ use \Yiisoft\User\CurrentUser;
     ])
     ->begin() ?>
 
-<?= Field::widget()->config($form, 'id')->passwordInput(); ?>
+<?= Field::widget()->config($form, 'id'); ?>
+<?= Field::widget()->config($form, 'password')->passwordInput(); ?>
 
 <?= Html::submitButton('Login') ?>
 

@@ -207,7 +207,7 @@ class SiteController
                 $form->load($request->getParsedBody());
                 $validator->validate($form);
                 
-                $identity = $identityRepository->findIdentity($form->getId());
+                $identity = $identityRepository->accessCheck($form->getId(), $form->getPassword());
                 if ($identity != null){
                     $this->user->login($identity);
                 }

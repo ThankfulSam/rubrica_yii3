@@ -30,14 +30,27 @@ final class IdentityRepository implements IdentityRepositoryInterface
         return null;
     }
     
-    public function findIdentityByToken(string $token, string $type) : ?IdentityInterface
+    public function accessCheck(string $id, string $password) : ?IdentityInterface
     {
-        /*foreach (self::USERS as $user) {
+        foreach (self::USERS as $user) {
+            if ((string)$user['id'] === $id && (string)$user['password'] === $password) {
+                return new Identity($id);
+            }
+        }
+        
+        return null;
+    }
+    
+    /*public function findIdentityByToken(string $token, string $type) : ?IdentityInterface
+    {
+        foreach (self::USERS as $user) {
             if ($user['token'] === $token) {
                 return new Identity((string)$user['id']);
             }
         }
         
-        return null;*/
-    }
+        return null;
+    }*/
+    
+    
 }

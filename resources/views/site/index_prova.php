@@ -7,11 +7,18 @@ use Yiisoft\Html\Tag\Button;
 use Yiisoft\Form\Widget\Form;
 use Yiisoft\Yii\DataView\ListView;
 use Yiisoft\Data\Paginator\OffsetPaginator;
+use Yiisoft\Yii\DataView\GridView;
+use Yiisoft\Yii\DataView\Columns\DataColumn;
+use Yiisoft\Yii\DataView\Widget\LinkPager;
+use Yiisoft\Yii\DataView\Columns\SerialColumn;
+use Yiisoft\Yii\DataView\Columns\CheckboxColumn;
+use App\Form\ContactForm;
 
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
  *  @var \Yiisoft\Router\UrlGeneratorInterface $url
  *  @var OffsetPaginator $paginator
+ *  @var ContactForm $contact_form
  */
 
 $this->params['breadcrumbs'] = '/';
@@ -23,7 +30,7 @@ $this->setTitle($applicationParameters->getName());
 
 <p class="subtitle">Utente <strong><?php echo $user->getId(); ?></strong>!</p>
     
-<?= ListView::widget()
+<?php /* echo ListView::widget()
         ->cssFramework(ListView::BULMA)
         ->itemOptions(['tag' => 'table'])
         ->itemView(//'//_list_view_contact.php')
@@ -34,6 +41,26 @@ $this->setTitle($applicationParameters->getName());
                 //'</button>' .
                 '</tr>'
         )
+        ->paginator($paginator);*/
+?>
+
+<?= GridView::widget()
+        ->tableOptions(['align'=>'center'])
+        ->columns([
+            [
+                'class' => SerialColumn::class, // this line is optional
+            ],
+            /*[
+                'class' => DataColumn::class,
+                'attribute()' => ['nome'],
+                'label()' => ['Nome'],
+                'value()' => static function ($contact_form) {
+                      return $contact_form['nome'] === 'Nico'
+                             ? '(prova)' : $contact_form['nome'];
+                },
+            ],*/
+            'nome','cognome', 'preferito'
+        ])
         ->paginator($paginator);
 ?>
 
