@@ -18,6 +18,7 @@ use Yiisoft\Data\Reader\DataReaderInterface;
 use Yiisoft\Data\Reader\ReadableDataInterface;
 use Yiisoft\Data\Paginator\OffsetPaginator;
 use App\Reader\MyDataReader;
+use App\Form\SignupForm;
 
 class SiteController
 {
@@ -233,6 +234,15 @@ class SiteController
             
         return $this->viewRenderer->render('login', ['form' => $form]);
         
+    }
+    
+    public function actionSignup(ServerRequestInterface $request, Validator $validator) {
+        $form = new SignupForm();
+        
+        if($request->getMethod() === Method::POST){
+            $form->load($request->getParsedBody());
+            $validator->validate($form);
+        }
     }
     
 }

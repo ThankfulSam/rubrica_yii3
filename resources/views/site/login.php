@@ -34,3 +34,4 @@ use Yiisoft\Security\PasswordHasher;
 
 <?= Form::end() ?>
 
+<?= 'Non sei ancora iscritto? Clicca' . Html::a('qui', $url->generate('site/signup')); ?>
