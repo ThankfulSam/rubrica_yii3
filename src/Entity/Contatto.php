@@ -17,43 +17,43 @@ class Contatto
      * @Column(type="primary")
      * @var int
      */
-    protected $id;
+    public $id;
     
     /**
      * @Column(type="string")
      * @var string
      */
-    protected $nome;
+    public $nome;
     
     /**
      * @Column(type="string")
      * @var string
      */
-    protected $cognome;
+    public $cognome;
     
     /**
      * @Column(type="string")
      * @var string
      */
-    protected $telefono;
+    public $telefono;
     
     /**
      * @Column(type="string")
      * @var string
      */
-    protected $indirizzo;
+    public $indirizzo;
     
     /**
      * @Column(type="int")
      * @var int
      */
-    protected $preferito;
+    public $preferito;
     
     /**
      * @Column(type="int")
      * @var int
      */
-    protected $user_id;
+    public $user_id;
     
     public function getId(): int
     {
@@ -75,14 +75,6 @@ class Contatto
     
     public function getIndirizzo() {
         return $this->indirizzo;
-    }
-    
-    public function setPreferito(){
-        if($this->preferito == 1){
-            $this->preferito = 0;
-        } else {
-            $this->preferito = 1;  
-        }
     }
 
 }

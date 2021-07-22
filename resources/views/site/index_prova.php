@@ -9,6 +9,8 @@ use Yiisoft\Yii\DataView\Columns\DataColumn;
 use Yiisoft\Yii\DataView\Columns\SerialColumn;
 use App\Form\ContactForm;
 use App\Form\SearchForm;
+use App\Entity\Contatto;
+use Yiisoft\Yii\DataView\Columns\ActionColumn;
 
 
 /** @var App\ApplicationParameters $applicationParameters
@@ -42,7 +44,7 @@ $this->setTitle($applicationParameters->getName());
         ->paginator($paginator);*/
 ?>
 
-<?= GridView::widget()
+<?php /* echo GridView::widget()
         ->tableOptions(['align'=>'center'])
         ->columns([
             [
@@ -57,6 +59,25 @@ $this->setTitle($applicationParameters->getName());
                 }],
             ],
             'preferito'
+        ])
+        ->paginator($paginator);*/
+?>
+
+<?php echo GridView::widget()
+        ->tableOptions(['align'=>'center'])
+        ->columns([
+            [
+                'class' => SerialColumn::class, // this line is optional
+            ],
+            /*[
+                'class' => DataColumn::class,
+                'attribute()' => ['nome'],
+                'label()' => ['Nome'],
+                'value()' => [static function($contact_form) use ($url){
+                    return Html::a($contact_form['nome'].' '.$contact_form['cognome'], $url->generate('site/view', ['id' => $contact_form['id']]));
+                }],
+            ],*/
+            'nome', 'cognome'
         ])
         ->paginator($paginator);
 ?>
@@ -84,6 +105,3 @@ $this->setTitle($applicationParameters->getName());
 <?= Form::end() ?>
 */ ?>
 
-<button>
-	<?php echo Html::a('prova ORM', $url->generate('site/prova')); ?>
-</button>

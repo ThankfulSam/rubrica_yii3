@@ -22,13 +22,13 @@ use Yiisoft\Security\PasswordHasher;
 use App\Form\SearchForm;
 use Cycle\ORM;
 use Spiral\Tokenizer;
-use Doctrine\Common\Annotations\AnnotationRegistry;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Registry;
 use App\Entity\User;
-use Cycle\Annotated\Embeddings;
 use Cycle\Annotated\Entities;
 use App\Entity\Contatto;
+use App\Repository\ContattoRepository;
+use Yiisoft\Data\Reader\Filter\Equals;
 
 class SiteController
 {
@@ -36,6 +36,7 @@ class SiteController
     private ViewRenderer $viewRenderer;
     private CurrentUser $user;
     private DatabaseManager $dbal;
+    private ContattoRepository $contact_repo;
     
     public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, 
         DatabaseManager $dbal)
@@ -43,6 +44,7 @@ class SiteController
         $this->viewRenderer = $viewRenderer->withControllerName('site');
         $this->user = $user;
         $this->dbal = $dbal;
+        $this->contact_repo = new ContattoRepository($this->returnORM()->getRepository(Contatto::class)->select(), $this->user);
     }
     
     public function index(): ResponseInterface
@@ -51,7 +53,9 @@ class SiteController
         $form = new LoginForm();
         $contact_form = new ContactForm();
         $search_form = new SearchForm();
-        $paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
+        $paginator = new OffsetPaginator(
+            $this->contact_repo->all()
+        );
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
@@ -70,7 +74,8 @@ class SiteController
     {
         if (isset($request->getQueryParams()['id'])){
             $id = $request->getQueryParams()['id'];
-            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $id)->fetchAll();
+            $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $id));
+            //$contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $id)->fetchAll();
             
             return $this->viewRenderer->render('view', [
                 'contatto' => $contatto
@@ -341,7 +346,20 @@ class SiteController
         };*/
     }
     
-    public function actionProva() {
+    public function returnORM(){
+        $cl = (new Tokenizer\Tokenizer(new Tokenizer\Config\TokenizerConfig([
+            'directories' => ['src/Entity'],
+        ])))->classLocator();
+        $schema = (new Compiler())->compile(new Registry($this->dbal), [
+            new Entities($cl),    // register annotated entities
+        ]);
+        
+        $orm = new ORM\ORM(new ORM\Factory($this->dbal), new ORM\Schema($schema));
+        
+        return $orm;
+    }
+    
+    /*public function actionProva(): ResponseInterface {
         
         $cl = (new Tokenizer\Tokenizer(new Tokenizer\Config\TokenizerConfig([
             'directories' => ['src/Entity'],
@@ -360,7 +378,7 @@ class SiteController
         
         $t = new ORM\Transaction($orm);
         $t->persist($u);
-        $t->run();*/
+        $t->run();
         
         $source = $orm->getSource(User::class);
         $db = $source->getDatabase();
@@ -372,7 +390,20 @@ class SiteController
         //print_r($select->where('username', 'samu')->fetchAll());
         
         $select2 = $orm->getRepository(Contatto::class)->select();
-        print_r($select2->fetchAll());
+        //print_r($select2->fetchAll());
         
-    }
+        $repository = new ContattoRepository($select2);
+        $preferiti = $repository
+        ->findPreferiti()->withFilter(new Equals('nome', 'hNico'));
+        
+        $paginator = new OffsetPaginator($preferiti);
+        $contact_form = new ContactForm();
+        $search_form = new SearchForm();
+        
+        return $this->viewRenderer->render('index_prova', [
+            'paginator' => $paginator,
+            'contact_form' => $contact_form,
+            'search_form' => $search_form
+        ]);
+    }*/
 }
