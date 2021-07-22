@@ -19,6 +19,7 @@ use App\Reader\MyDataReader;
 use App\Form\SignupForm;
 use function PHPUnit\Framework\equalTo;
 use Yiisoft\Security\PasswordHasher;
+use App\Form\SearchForm;
 
 class SiteController
 {
@@ -40,12 +41,14 @@ class SiteController
         
         $form = new LoginForm();
         $contact_form = new ContactForm();
+        $search_form = new SearchForm();
         $paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
                 'paginator' => $paginator,
-                'contact_form' => $contact_form
+                'contact_form' => $contact_form,
+                'search_form' => $search_form
             ]);
         } else {
             return $this->viewRenderer->render('login', [
@@ -74,7 +77,6 @@ class SiteController
     public function actionSetPreferred(ServerRequestInterface $request): ResponseInterface 
     {
         
-        //if($request->getMethod() === Method::POST && isset($request->getQueryParams()['id'])){
         if(isset($request->getQueryParams()['id'])){
             
             $id = $request->getQueryParams()['id'];
@@ -139,6 +141,7 @@ class SiteController
     {
         $form = new ContactForm();
         $contact_form = new ContactForm();
+        $search_form = new SearchForm();
         
         $paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
         
@@ -160,7 +163,8 @@ class SiteController
             return $this->viewRenderer->render('index_prova', 
                 [
                     'paginator' => $paginator,
-                    'contact_form' => $contact_form
+                    'contact_form' => $contact_form,
+                    'search_form' => $search_form
                 ]);
         }
         
@@ -181,6 +185,7 @@ class SiteController
     public function actionDelete(ServerRequestInterface $request)
     {
         $contact_form = new ContactForm();
+        $search_form = new SearchForm();
         $paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
         
         if (isset($request->getQueryParams()['id'])){
@@ -195,7 +200,8 @@ class SiteController
         $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->fetchAll();
         return $this->viewRenderer->render('index_prova', [
             'paginator' => $paginator,
-            'contact_form' => $contact_form
+            'contact_form' => $contact_form,
+            'search_form' => $search_form
         ]);
     }
     
@@ -292,6 +298,38 @@ class SiteController
         }
         
         return true;
+    }
+    
+    /*METODO CHE PERMETTE LA RICERCA DI UN CONTATTO A PARTIRE DA NOME O COGNOME*/
+    public function actionSearch(ServerRequestInterface $request): ResponseInterface 
+    {
+        /*$search_form = new SearchForm();
+        $dataReader = new MyDataReader($this->dbal, $this->user);
+        
+        if($request->getMethod() === Method::POST){
+            $search_form->load($request->getParsedBody());
+            
+            // NOME E COGNOME ENTRAMBI SETTATI
+            if(!empty($search_form->getNome()) && !empty($search_form->getCognome())){
+                $contatto = $this->dbal->database('default')
+                    ->select()
+                    ->from('contatticonpreferitiyii3')
+                    ->where('nome', $search_form->getNome())
+                    ->andWhere('cognome', $search_form->getCognome())
+                    ->limit(1)
+                    ->fetchAll();
+                return $this->viewRenderer->render('view', [
+                    'contatto' => $contatto    
+                ]);
+            }
+            elseif(!empty($search_form->getNome()) && empty($search_form->getCognome())){
+                $nome = $search_form->getNome();
+                $result = $dataReader->readAndFilterWhere('nome', $search_form->getNome());
+                $a = new OffsetPaginator($dataReader);
+            }
+            
+            
+        };*/
     }
     
 }

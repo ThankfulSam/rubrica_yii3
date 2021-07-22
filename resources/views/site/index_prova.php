@@ -4,6 +4,7 @@ declare(strict_types=1);
 use Yiisoft\User\CurrentUser;
 use Yiisoft\Html\Html;
 use Yiisoft\Html\Tag\Button;
+use Yiisoft\Form\Widget\Field;
 use Yiisoft\Form\Widget\Form;
 use Yiisoft\Yii\DataView\ListView;
 use Yiisoft\Data\Paginator\OffsetPaginator;
@@ -13,12 +14,15 @@ use Yiisoft\Yii\DataView\Widget\LinkPager;
 use Yiisoft\Yii\DataView\Columns\SerialColumn;
 use Yiisoft\Yii\DataView\Columns\CheckboxColumn;
 use App\Form\ContactForm;
+use App\Form\SearchForm;
+use Yiisoft\Router\UrlGeneratorInterface;
 
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
  *  @var \Yiisoft\Router\UrlGeneratorInterface $url
  *  @var OffsetPaginator $paginator
  *  @var ContactForm $contact_form
+ *  @var SearchForm $search_form
  */
 
 $this->params['breadcrumbs'] = '/';
@@ -50,16 +54,15 @@ $this->setTitle($applicationParameters->getName());
             [
                 'class' => SerialColumn::class, // this line is optional
             ],
-            /*[
+            [
                 'class' => DataColumn::class,
                 'attribute()' => ['nome'],
                 'label()' => ['Nome'],
-                'value()' => static function ($contact_form) {
-                      return $contact_form['nome'] === 'samu'
-                        ? ['prova'] : $contact_form['nome'];
-                },
-            ],*/
-            'nome','cognome', 'preferito'
+                'value()' => [static function($contact_form) use ($url){
+                    return Html::a($contact_form['nome'].' '.$contact_form['cognome'], $url->generate('site/view', ['id' => $contact_form['id']]));
+                }],
+            ],
+            'preferito'
         ])
         ->paginator($paginator);
 ?>
@@ -68,3 +71,21 @@ $this->setTitle($applicationParameters->getName());
 <button>
 	<?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?>
 </button>
+<br>
+<br>
+<?php /*
+<h2>Ricerca contatto!</h2>
+<?= Form::widget()
+    ->action($url->generate('site/search'))
+    ->options([
+        'csrf' => $csrf,
+    ])
+    ->begin() ?>
+
+<?= Field::widget()->config($search_form, 'nome'); ?>
+<?= Field::widget()->config($search_form, 'cognome'); ?>
+
+<?= Html::submitButton('Cerca') ?>
+
+<?= Form::end() ?>
+*/ ?>
