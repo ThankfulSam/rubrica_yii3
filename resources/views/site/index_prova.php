@@ -3,19 +3,13 @@
 declare(strict_types=1);
 use Yiisoft\User\CurrentUser;
 use Yiisoft\Html\Html;
-use Yiisoft\Html\Tag\Button;
-use Yiisoft\Form\Widget\Field;
-use Yiisoft\Form\Widget\Form;
-use Yiisoft\Yii\DataView\ListView;
 use Yiisoft\Data\Paginator\OffsetPaginator;
 use Yiisoft\Yii\DataView\GridView;
 use Yiisoft\Yii\DataView\Columns\DataColumn;
-use Yiisoft\Yii\DataView\Widget\LinkPager;
 use Yiisoft\Yii\DataView\Columns\SerialColumn;
-use Yiisoft\Yii\DataView\Columns\CheckboxColumn;
 use App\Form\ContactForm;
 use App\Form\SearchForm;
-use Yiisoft\Router\UrlGeneratorInterface;
+
 
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
@@ -89,3 +83,7 @@ $this->setTitle($applicationParameters->getName());
 
 <?= Form::end() ?>
 */ ?>
+
+<button>
+	<?php echo Html::a('prova ORM', $url->generate('site/prova')); ?>
+</button>

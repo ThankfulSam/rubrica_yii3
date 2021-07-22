@@ -27,7 +27,7 @@ return [
         ],
     ],
 
-    'yiisoft/yii-cycle' => [
+    /*'yiisoft/yii-cycle' => [
         // DBAL config
         'dbal' => [
             // SQL query logger. Definition of Psr\Log\LoggerInterface
@@ -57,7 +57,7 @@ return [
             'namespace' => 'App\\Migration',
             'table' => 'migration',
             'safe' => false,
-        ],
+        ],*/
 
         /**
          * Config for {@see \Yiisoft\Yii\Cycle\Factory\OrmFactory}
@@ -65,7 +65,7 @@ return [
          *
          * @link https://github.com/cycle/docs/blob/master/advanced/promise.md
          */
-        'orm-promise-factory' => null,
+        /*'orm-promise-factory' => null,
 
         /**
          * SchemaProvider list for {@see \Yiisoft\Yii\Cycle\Schema\Provider\Support\SchemaProviderPipeline}
@@ -85,7 +85,7 @@ return [
          *     ],
          * ]
          */
-        'schema-providers' => [
+        /*'schema-providers' => [
             \Yiisoft\Yii\Cycle\Schema\Provider\SimpleCacheSchemaProvider::class => [
                 'key' => 'my-custom-cache-key'
             ],
@@ -93,15 +93,15 @@ return [
                 'files' => ['@runtime/cycle-schema.php']
             ],
             \Yiisoft\Yii\Cycle\Schema\Provider\FromConveyorSchemaProvider::class,
-        ],
+        ],*/
 
         /**
          * Config for {@see \Yiisoft\Yii\Cycle\Schema\Conveyor\AnnotatedSchemaConveyor}
          * Annotated entity directories list.
          * {@see \Yiisoft\Aliases\Aliases} are also supported.
          */
-        'annotated-entity-paths' => [
+        /*'annotated-entity-paths' => [
             '@entity'
         ],
-    ],
+    ],*/
 ];

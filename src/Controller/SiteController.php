@@ -20,6 +20,15 @@ use App\Form\SignupForm;
 use function PHPUnit\Framework\equalTo;
 use Yiisoft\Security\PasswordHasher;
 use App\Form\SearchForm;
+use Cycle\ORM;
+use Spiral\Tokenizer;
+use Doctrine\Common\Annotations\AnnotationRegistry;
+use Cycle\Schema\Compiler;
+use Cycle\Schema\Registry;
+use App\Entity\User;
+use Cycle\Annotated\Embeddings;
+use Cycle\Annotated\Entities;
+use App\Entity\Contatto;
 
 class SiteController
 {
@@ -332,4 +341,38 @@ class SiteController
         };*/
     }
     
+    public function actionProva() {
+        
+        $cl = (new Tokenizer\Tokenizer(new Tokenizer\Config\TokenizerConfig([
+            'directories' => ['src/Entity'],
+        ])))->classLocator();
+        //AnnotationRegistry::registerLoader('class_exists');
+        
+        $schema = (new Compiler())->compile(new Registry($this->dbal), [
+            //new Embeddings($cl),  // register embeddable entities
+            new Entities($cl),    // register annotated entities
+        ]);
+        //$orm = $orm->withSchema(new ORM\Schema($schema));
+        $orm = new ORM\ORM(new ORM\Factory($this->dbal), new ORM\Schema($schema));
+        
+        /*$u = new User();
+        $u->setUsername("Hello World");
+        
+        $t = new ORM\Transaction($orm);
+        $t->persist($u);
+        $t->run();*/
+        
+        $source = $orm->getSource(User::class);
+        $db = $source->getDatabase();
+        
+        $result = $db->query('SELECT * FROM users');
+        //print_r($result->fetchAll());
+        
+        $select = $orm->getRepository(User::class)->select();
+        //print_r($select->where('username', 'samu')->fetchAll());
+        
+        $select2 = $orm->getRepository(Contatto::class)->select();
+        print_r($select2->fetchAll());
+        
+    }
 }
