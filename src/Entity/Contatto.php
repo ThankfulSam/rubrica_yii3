@@ -55,12 +55,12 @@ class Contatto
      */
     public $user_id;
     
-    public function getId(): int
+    public function getId()
     {
         return $this->id;
     }
     
-    public function getNome(): string
+    public function getNome()
     {
         return $this->nome;
     }
@@ -75,6 +75,62 @@ class Contatto
     
     public function getIndirizzo() {
         return $this->indirizzo;
+    }
+    
+    public function getPreferito() {
+        return $this->preferito;
+    }
+    
+    public function setId(int $id): void
+    {
+        $this->id = $id;
+    }
+    
+    public function setNome(string $nome): void
+    {
+        $this->nome = $nome;
+    }
+    
+    public function setCognome(string $cognome): void 
+    {
+        $this->cognome = $cognome;
+    }
+    
+    public function setTelefono(string $telefono): void
+    {
+        $this->telefono = $telefono;
+    }
+    
+    public function setIndirizzo(string $indirizzo): void
+    {
+        $this->indirizzo = $indirizzo;
+    }
+    
+    public function setUserId(string $user_id): void 
+    {
+        $this->user_id = (int)$user_id;
+    }
+    
+    public function setPreferito(?int $preferito): void 
+    {
+        
+        if(isset($preferito)){
+            $this->preferito = $preferito;
+        } else {
+            if ($this->preferito == 1){
+                $this->preferito = 0;
+            } else {
+                $this->preferito = 1;
+            }
+        }
+        
+    }
+    
+    public function updateAll(string $nome, string $cognome, string $telefono, string $indirizzo){
+        $this->nome = $nome;
+        $this->cognome = $cognome;
+        $this->telefono = $telefono;
+        $this->indirizzo = $indirizzo;
     }
 
 }

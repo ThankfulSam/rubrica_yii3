@@ -2,6 +2,8 @@
 
 declare(strict_types=1);
 use Yiisoft\User\CurrentUser;
+use Yiisoft\Form\Widget\Field;
+use Yiisoft\Form\Widget\Form;
 use Yiisoft\Html\Html;
 use Yiisoft\Data\Paginator\OffsetPaginator;
 use Yiisoft\Yii\DataView\GridView;
@@ -69,15 +71,15 @@ $this->setTitle($applicationParameters->getName());
             [
                 'class' => SerialColumn::class, // this line is optional
             ],
-            /*[
+            [
                 'class' => DataColumn::class,
                 'attribute()' => ['nome'],
-                'label()' => ['Nome'],
-                'value()' => [static function($contact_form) use ($url){
-                    return Html::a($contact_form['nome'].' '.$contact_form['cognome'], $url->generate('site/view', ['id' => $contact_form['id']]));
+                'label()' => ['Nome e cognome'],
+                'value()' => [static function($contact) use ($url){
+                    return Html::a($contact->getNome() .' '.$contact->getCognome(), $url->generate('site/view', ['id' => $contact->getId()]));
                 }],
-            ],*/
-            'nome', 'cognome'
+            ],
+            //'nome', 'cognome'
         ])
         ->paginator($paginator);
 ?>
@@ -88,7 +90,7 @@ $this->setTitle($applicationParameters->getName());
 </button>
 <br>
 <br>
-<?php /*
+
 <h2>Ricerca contatto!</h2>
 <?= Form::widget()
     ->action($url->generate('site/search'))
@@ -103,5 +105,3 @@ $this->setTitle($applicationParameters->getName());
 <?= Html::submitButton('Cerca') ?>
 
 <?= Form::end() ?>
-*/ ?>
-

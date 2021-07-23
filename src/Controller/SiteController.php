@@ -29,6 +29,8 @@ use Cycle\Annotated\Entities;
 use App\Entity\Contatto;
 use App\Repository\ContattoRepository;
 use Yiisoft\Data\Reader\Filter\Equals;
+use Cycle\ORM\Transaction;
+use Yiisoft\Data\Reader\Filter\Like;
 
 class SiteController
 {
@@ -53,6 +55,8 @@ class SiteController
         $form = new LoginForm();
         $contact_form = new ContactForm();
         $search_form = new SearchForm();
+        
+        //$paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
         $paginator = new OffsetPaginator(
             $this->contact_repo->all()
         );
@@ -74,8 +78,9 @@ class SiteController
     {
         if (isset($request->getQueryParams()['id'])){
             $id = $request->getQueryParams()['id'];
-            $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $id));
-            //$contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $id)->fetchAll();
+            $contatto = $this->contact_repo->all()
+                ->withFilter(new Equals('id', $id))
+                ->read();
             
             return $this->viewRenderer->render('view', [
                 'contatto' => $contatto
@@ -95,26 +100,23 @@ class SiteController
             
             $id = $request->getQueryParams()['id'];
             
-            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $id)->fetchAll();
-            if ($contatto[0]['preferito']){
-                $this->dbal->database('default')->table('contatticonpreferitiyii3')
-                ->update(['preferito' => '0'])
-                ->where('id', $id)
-                ->run();
-            } else {
-                $this->dbal->database('default')->table('contatticonpreferitiyii3')
-                ->update(['preferito' => '1'])
-                ->where('id', $id)
-                ->run();
-            }
-            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $id)->fetchAll();
+            $orm = $this->returnORM();
+            $contact_to_change = $orm
+                ->getRepository(Contatto::class)
+                ->findByPK($id);
+            
+            $contact_to_change->setPreferito(null);
+            
+            (new Transaction($orm))->persist($contact_to_change)->run();
+            
+            $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $id))->read();
             
             return $this->viewRenderer->render('view', [
                 'contatto' => $contatto
             ]);
         } else {
             return $this->viewRenderer->render('index');    
-        } 
+        }
         
     }
     
@@ -126,16 +128,15 @@ class SiteController
         
         if($request->getMethod() === Method::POST) {
             $form->load($request->getParsedBody());
-            $this->dbal->database('default')->table('contatticonpreferitiyii3')
-            ->update(['nome' => $form->getNome(),
-                'cognome' => $form->getCognome(),
-                'telefono' => $form->getTelefono(),
-                'indirizzo' => $form->getIndirizzo()
-            ])
-            ->where('id', $form->getId())
-            ->run();
             
-            $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $form->getId())->fetchAll();
+            $orm = $this->returnORM();
+            $contact_to_change = $orm->getRepository(Contatto::class)->findByPK($form->getId());
+            $contact_to_change->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
+            
+            (new Transaction($orm))->persist($contact_to_change)->run();
+            
+            $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $form->getId()))->read();
+            
             return $this->viewRenderer->render('view', [
                 'contatto' => $contatto
             ]);
@@ -157,23 +158,21 @@ class SiteController
         $contact_form = new ContactForm();
         $search_form = new SearchForm();
         
-        $paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
+        $paginator = new OffsetPaginator(
+            $this->contact_repo->all()
+        );
         
         if($request->getMethod() === Method::POST) {
             $form->load($request->getParsedBody());
-            $this->dbal->database('default')->table('contatticonpreferitiyii3')
-            ->insert()->values([
-                'id' => $form->getId(),
-                'nome' => $form->getNome(),
-                'cognome' => $form->getCognome(),
-                'telefono' => $form->getTelefono(),
-                'indirizzo' => $form->getIndirizzo(),
-                'preferito' => 0,
-                'user_id' => (int)$this->user->getId(),
-            ])
-            ->run();
             
-            $tab_contatti = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->fetchAll();
+            $contact = new Contatto();
+            $contact->setId($form->getId());
+            $contact->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
+            $contact->setPreferito(0);
+            $contact->setUserId($this->user->getId());
+            
+            (new Transaction($this->returnORM()))->persist($contact)->run();
+            
             return $this->viewRenderer->render('index_prova', 
                 [
                     'paginator' => $paginator,
@@ -182,7 +181,8 @@ class SiteController
                 ]);
         }
         
-        $id = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->max('id');
+        $id = $this->contact_repo->select()->max('id');
+
         $form->setAttribute('id', $id+1);
         $form->setAttribute('nome', '');
         $form->setAttribute('cognome', '');
@@ -200,18 +200,19 @@ class SiteController
     {
         $contact_form = new ContactForm();
         $search_form = new SearchForm();
-        $paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
+        $paginator = new OffsetPaginator(
+            $this->contact_repo->all()
+        );
         
         if (isset($request->getQueryParams()['id'])){
             $id = $request->getQueryParams()['id'];
-            $this->dbal->database('default')
-                ->table('contatticonpreferitiyii3')
-                ->delete()
-                ->where('id', $id)
-                ->run();
+            
+            $orm = $this->returnORM();
+            $contact_to_delete = $orm->getRepository(Contatto::class)->findByPK($id);
+            (new Transaction($orm))->delete($contact_to_delete)->run();
+            
         }
         
-        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->fetchAll();
         return $this->viewRenderer->render('index_prova', [
             'paginator' => $paginator,
             'contact_form' => $contact_form,
@@ -317,39 +318,45 @@ class SiteController
     /*METODO CHE PERMETTE LA RICERCA DI UN CONTATTO A PARTIRE DA NOME O COGNOME*/
     public function actionSearch(ServerRequestInterface $request): ResponseInterface 
     {
-        /*$search_form = new SearchForm();
-        $dataReader = new MyDataReader($this->dbal, $this->user);
+        $search_form = new SearchForm();
+        $contact_form = new ContactForm();
         
+        /*$paginator = new OffsetPaginator(
+            $this->contact_repo->all()
+        );*/
+                
         if($request->getMethod() === Method::POST){
             $search_form->load($request->getParsedBody());
             
-            // NOME E COGNOME ENTRAMBI SETTATI
-            if(!empty($search_form->getNome()) && !empty($search_form->getCognome())){
-                $contatto = $this->dbal->database('default')
-                    ->select()
-                    ->from('contatticonpreferitiyii3')
-                    ->where('nome', $search_form->getNome())
-                    ->andWhere('cognome', $search_form->getCognome())
-                    ->limit(1)
-                    ->fetchAll();
-                return $this->viewRenderer->render('view', [
-                    'contatto' => $contatto    
-                ]);
-            }
-            elseif(!empty($search_form->getNome()) && empty($search_form->getCognome())){
-                $nome = $search_form->getNome();
-                $result = $dataReader->readAndFilterWhere('nome', $search_form->getNome());
-                $a = new OffsetPaginator($dataReader);
-            }
+            $paginator = new OffsetPaginator(
+                /*$this->contact_repo->all()
+                    ->withFilter(new Like('nome', '%' . $search_form->getNome() . '%'))
+                    ->withFilterProcessors()
+                    //->withFilter(new Like('cognome', '%' . $search_form->getCognome() . '%'))
+                */
+                $this->contact_repo->search($search_form->getNome(), $search_form->getCognome())
+            );
             
-            
-        };*/
+            return $this->viewRenderer->render('index_prova', [
+                'paginator' => $paginator,
+                'contact_form' => $contact_form,
+                'search_form' => $search_form
+            ]);
+        };
+        
+        /*return $this->viewRenderer->render('index_prova', [
+            'paginator' => $paginator,
+            'contact_form' => $contact_form,
+            'search_form' => $search_form
+        ]);*/
+        
     }
     
     public function returnORM(){
         $cl = (new Tokenizer\Tokenizer(new Tokenizer\Config\TokenizerConfig([
             'directories' => ['src/Entity'],
         ])))->classLocator();
+        
         $schema = (new Compiler())->compile(new Registry($this->dbal), [
             new Entities($cl),    // register annotated entities
         ]);
@@ -359,51 +366,4 @@ class SiteController
         return $orm;
     }
     
-    /*public function actionProva(): ResponseInterface {
-        
-        $cl = (new Tokenizer\Tokenizer(new Tokenizer\Config\TokenizerConfig([
-            'directories' => ['src/Entity'],
-        ])))->classLocator();
-        //AnnotationRegistry::registerLoader('class_exists');
-        
-        $schema = (new Compiler())->compile(new Registry($this->dbal), [
-            //new Embeddings($cl),  // register embeddable entities
-            new Entities($cl),    // register annotated entities
-        ]);
-        //$orm = $orm->withSchema(new ORM\Schema($schema));
-        $orm = new ORM\ORM(new ORM\Factory($this->dbal), new ORM\Schema($schema));
-        
-        /*$u = new User();
-        $u->setUsername("Hello World");
-        
-        $t = new ORM\Transaction($orm);
-        $t->persist($u);
-        $t->run();
-        
-        $source = $orm->getSource(User::class);
-        $db = $source->getDatabase();
-        
-        $result = $db->query('SELECT * FROM users');
-        //print_r($result->fetchAll());
-        
-        $select = $orm->getRepository(User::class)->select();
-        //print_r($select->where('username', 'samu')->fetchAll());
-        
-        $select2 = $orm->getRepository(Contatto::class)->select();
-        //print_r($select2->fetchAll());
-        
-        $repository = new ContattoRepository($select2);
-        $preferiti = $repository
-        ->findPreferiti()->withFilter(new Equals('nome', 'hNico'));
-        
-        $paginator = new OffsetPaginator($preferiti);
-        $contact_form = new ContactForm();
-        $search_form = new SearchForm();
-        
-        return $this->viewRenderer->render('index_prova', [
-            'paginator' => $paginator,
-            'contact_form' => $contact_form,
-            'search_form' => $search_form
-        ]);
-    }*/
 }
