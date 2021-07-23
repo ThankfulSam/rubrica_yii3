@@ -25,10 +25,12 @@ class ContattoRepository extends Repository
         return new EntityReader($this->select()->where('user_id', $this->user->getId()));
     }
     
-    /*public function findPreferiti(): DataReaderInterface
+    public function findPreferiti(): DataReaderInterface
     {
-        return new EntityReader($this->select()->where(['preferito' => 1]));
-    }*/
+        return new EntityReader($this->select()
+            ->where('user_id', $this->user->getId())    
+            ->andWhere('preferito', 1));
+    }
     
     //messo di qua perché il with filter sull'entity reader sembra possa essere
     //fatto una volta volta sola -> forse andava usato filter processors per fare più query

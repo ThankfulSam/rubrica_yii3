@@ -86,6 +86,20 @@ $this->setTitle($applicationParameters->getName());
 
 <br>
 <button>
+	<?php echo Html::a('Mostra solo preferiti', $url->generate('site/preferred')); ?>
+</button>
+<button>
+	<?php echo Html::a('Mostra tutti', $url->generate('home')); ?>
+</button>
+<br>
+<button>
+	<?php echo Html::a('Ordina per nome', $url->generate('site/ordinaPer', ['per' => 'nome'])); ?>
+</button>
+<button>
+	<?php echo Html::a('Ordina per cognome', $url->generate('site/ordinaPer', ['per' => 'cognome'])); ?>
+</button>
+<br>
+<button>
 	<?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?>
 </button>
 <br>

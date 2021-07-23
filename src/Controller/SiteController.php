@@ -31,6 +31,7 @@ use App\Repository\ContattoRepository;
 use Yiisoft\Data\Reader\Filter\Equals;
 use Cycle\ORM\Transaction;
 use Yiisoft\Data\Reader\Filter\Like;
+use Yiisoft\Data\Reader\Sort;
 
 class SiteController
 {
@@ -220,6 +221,39 @@ class SiteController
         ]);
     }
     
+    public function actionPreferred(): ResponseInterface
+    {
+        $contact_form = new ContactForm();
+        $search_form = new SearchForm();
+        $paginator = new OffsetPaginator(
+            $this->contact_repo->findPreferiti()
+        );
+        
+        return $this->viewRenderer->render('index_prova', [
+            'paginator' => $paginator,
+            'contact_form' => $contact_form,
+            'search_form' => $search_form
+        ]);
+        
+    }
+    
+    public function actionOrdinaPer(ServerRequestInterface $request) : ResponseInterface
+    {
+        $contact_form = new ContactForm();
+        $search_form = new SearchForm();
+        $paginator = new OffsetPaginator(
+            $this->contact_repo->all()
+                ->withSort(Sort::any()->withOrder([$request->getQueryParams()['per'] => 'asc']))
+            );
+        
+        return $this->viewRenderer->render('index_prova', [
+            'paginator' => $paginator,
+            'contact_form' => $contact_form,
+            'search_form' => $search_form
+        ]);
+        
+    }
+    
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
         IdentityRepository $identityRepository): ResponseInterface
         {
@@ -307,7 +341,7 @@ class SiteController
     private function userAlreadyExist(string $username): bool 
     {
         $contatto = $this->dbal->database('default')->select()->from('users')->where('username', $username)->fetchAll();
-        print_r($contatto);
+        
         if(empty($contatto)){
             return false;
         }
@@ -320,20 +354,11 @@ class SiteController
     {
         $search_form = new SearchForm();
         $contact_form = new ContactForm();
-        
-        /*$paginator = new OffsetPaginator(
-            $this->contact_repo->all()
-        );*/
                 
         if($request->getMethod() === Method::POST){
             $search_form->load($request->getParsedBody());
             
             $paginator = new OffsetPaginator(
-                /*$this->contact_repo->all()
-                    ->withFilter(new Like('nome', '%' . $search_form->getNome() . '%'))
-                    ->withFilterProcessors()
-                    //->withFilter(new Like('cognome', '%' . $search_form->getCognome() . '%'))
-                */
                 $this->contact_repo->search($search_form->getNome(), $search_form->getCognome())
             );
             
@@ -343,12 +368,6 @@ class SiteController
                 'search_form' => $search_form
             ]);
         };
-        
-        /*return $this->viewRenderer->render('index_prova', [
-            'paginator' => $paginator,
-            'contact_form' => $contact_form,
-            'search_form' => $search_form
-        ]);*/
         
     }
     
