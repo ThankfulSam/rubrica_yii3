@@ -2,6 +2,7 @@
 namespace App\Form;
 
 use Yiisoft\Form\FormModel;
+use App\Entity\Contatto;
 
 class ContactForm extends FormModel
 {
@@ -45,7 +46,7 @@ class ContactForm extends FormModel
         $this->user_id = $user_id;
     }
     
-    public function loadData(array $array) {
+    /*public function loadData(array $array) {
         $this->id = $array[0];
         $this->nome = $array[1];
         $this->cognome = $array[2];
@@ -53,6 +54,16 @@ class ContactForm extends FormModel
         $this->indirizzo = $array[4];
         $this->preferito = $array[5];
         $this->user_id = $array[6];
+    }*/
+    
+    public function loadData(Contatto $cont) {
+        $this->id = $cont->getId();
+        $this->nome = $cont->getNome();
+        $this->cognome = $cont->getCognome();
+        $this->telefono = $cont->getTelefono();
+        $this->indirizzo = $cont->getIndirizzo();
+        $this->preferito = $cont->getPreferito();
+        $this->user_id = $cont->getUserId();
     }
     
     public function attributeLabels(): array

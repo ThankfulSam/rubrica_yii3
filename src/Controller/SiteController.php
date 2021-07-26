@@ -134,11 +134,11 @@ class SiteController
     public function actionUpdate(ServerRequestInterface $request)
     {
         $form = new ContactForm();
+        $orm = $this->returnORM();
         
         if($request->getMethod() === Method::POST) {
             $form->load($request->getParsedBody());
             
-            $orm = $this->returnORM();
             $contact_to_change = $orm->getRepository(Contatto::class)->findByPK($form->getId());
             $contact_to_change->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
             
@@ -151,8 +151,8 @@ class SiteController
             ]);
         }
         
-        $contatto = $this->dbal->database('default')->select()->from('contatticonpreferitiyii3')->where('id', $request->getQueryParams()['id'])->fetchAll();
-        $form->loadData(array_values($contatto[0]));
+        $contatto = $orm->getRepository(Contatto::class)->findByPK($request->getQueryParams()['id']);
+        $form->loadData($contatto);
         return $this->viewRenderer->render('update', [
             'form' => $form
         ]);
