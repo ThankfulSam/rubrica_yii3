@@ -2,20 +2,19 @@
 
 declare(strict_types=1);
 use Yiisoft\User\CurrentUser;
-use Yiisoft\Html\Html;
-use Yiisoft\Html\Tag\Button;
 use Yiisoft\Form\Widget\Field;
 use Yiisoft\Form\Widget\Form;
-use Yiisoft\Yii\DataView\ListView;
+use Yiisoft\Html\Html;
 use Yiisoft\Data\Paginator\OffsetPaginator;
 use Yiisoft\Yii\DataView\GridView;
 use Yiisoft\Yii\DataView\Columns\DataColumn;
-use Yiisoft\Yii\DataView\Widget\LinkPager;
 use Yiisoft\Yii\DataView\Columns\SerialColumn;
-use Yiisoft\Yii\DataView\Columns\CheckboxColumn;
 use App\Form\ContactForm;
 use App\Form\SearchForm;
-use Yiisoft\Router\UrlGeneratorInterface;
+use App\Entity\Contatto;
+use Yiisoft\Yii\DataView\Columns\ActionColumn;
+use Psr\Http\Message\ServerRequestInterface;
+
 
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
@@ -48,7 +47,7 @@ $this->setTitle($applicationParameters->getName());
         ->paginator($paginator);*/
 ?>
 
-<?= GridView::widget()
+<?php /* echo GridView::widget()
         ->tableOptions(['align'=>'center'])
         ->columns([
             [
@@ -64,16 +63,60 @@ $this->setTitle($applicationParameters->getName());
             ],
             'preferito'
         ])
+        ->paginator($paginator);*/
+?>
+
+<?php echo GridView::widget()
+        ->tableOptions(['align'=>'center'])
+        ->columns([
+            [
+                'class' => SerialColumn::class, // this line is optional
+            ],
+            [
+                'class' => DataColumn::class,
+                'attribute()' => ['nome'],
+                'label()' => ['Nome e cognome'],
+                'value()' => [static function($contact) use ($url){
+                    return Html::a($contact->getNome() .' '.$contact->getCognome(), $url->generate('site/view', ['id' => $contact->getId()]));
+                }],
+            ],
+            //'nome', 'cognome'
+        ])
         ->paginator($paginator);
 ?>
 
+<br>
+
+<?php 
+    $pref = null;
+    if(isset($_GET['pref'])){
+        $pref = $_GET['pref'];
+    }; 
+    $ordinaPer = null;
+    if(isset($_GET['per'])){
+        $ordinaPer = $_GET['per'];
+    };
+?>
+<button>
+	<?php echo Html::a('Mostra solo preferiti', $url->generate('home', ['pref' => 1, 'per' => $ordinaPer])); ?>
+</button>
+<button>
+	<?php echo Html::a('Mostra tutti', $url->generate('home', ['pref' => 0, 'per' => $ordinaPer])); ?>
+</button>
+<br>
+<button>
+	<?php echo Html::a('Ordina per nome', $url->generate('home', ['per' => 'nome', 'pref' => $pref])); ?>
+</button>
+<button>
+	<?php echo Html::a('Ordina per cognome', $url->generate('home', ['per' => 'cognome', 'pref' => $pref])); ?>
+</button>
 <br>
 <button>
 	<?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?>
 </button>
 <br>
 <br>
-<?php /*
+
 <h2>Ricerca contatto!</h2>
 <?= Form::widget()
     ->action($url->generate('site/search'))
@@ -88,4 +131,3 @@ $this->setTitle($applicationParameters->getName());
 <?= Html::submitButton('Cerca') ?>
 
 <?= Form::end() ?>
-*/ ?>

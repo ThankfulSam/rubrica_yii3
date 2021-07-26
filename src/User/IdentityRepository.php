@@ -7,25 +7,20 @@ use \Yiisoft\Auth\IdentityInterface;
 use \Yiisoft\Auth\IdentityRepositoryInterface;
 use Spiral\Database\DatabaseManager;
 use Yiisoft\Security\PasswordHasher;
+use App\Repository\UserRepository;
 
 final class IdentityRepository implements IdentityRepositoryInterface
 {
-    /*private const USERS = [
-        [
-            'id' => 'samu',
-            'password' => 'samuelemillucci'
-        ],
-        [
-            'id' => 42,
-            'password' => '54321'
-        ],
-    ];*/
     
     private $users;
     
     public function __construct(DatabaseManager $dbal){
         $this->users = $dbal->database('default')->select()->from('users')->fetchAll();
     }
+    
+    /*public function __construct(UserRepository $user_repo){
+        $this->users = $user_repo->all();
+    }*/
     
     public function findIdentity(string $id) : ?IdentityInterface
     {
@@ -38,7 +33,8 @@ final class IdentityRepository implements IdentityRepositoryInterface
         return null;
     }
     
-    public function accessCheck(string $username, string $password, DatabaseManager $dbal) : ?IdentityInterface
+    //public function accessCheck(string $username, string $password, DatabaseManager $dbal) : ?IdentityInterface
+    public function accessCheck(string $username, string $password) : ?IdentityInterface
     {
         
         $pass = new PasswordHasher();
