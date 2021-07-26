@@ -3,10 +3,10 @@ namespace App\Repository;
 
 use Cycle\ORM\Select\Repository;
 use Yiisoft\Data\Reader\DataReaderInterface;
-use \Yiisoft\Yii\Cycle\Data\Reader\EntityReader;
 use Yiisoft\User\CurrentUser;
+use Yiisoft\Yii\Cycle\Data\Reader\EntityReader;
 
-class ContattoRepository extends Repository
+class UserRepository extends Repository
 {
     
     private CurrentUser $user;
@@ -22,26 +22,7 @@ class ContattoRepository extends Repository
     
     public function all(): DataReaderInterface
     {
-        return new EntityReader($this->select()->where('user_id', $this->user->getId()));
-    }
-    
-    public function allWithFilter(?string $per, ?string $pref): DataReaderInterface
-    {
-        $query = $this->select()->where('user_id', $this->user->getId());
-        if(isset($per)){
-            $query->orderBy($per, 'ASC');
-        }
-        if ($pref == 1) {
-            $query->where('preferito', $pref);
-        }
-        return new EntityReader($query);
-    }
-    
-    public function findPreferiti(): DataReaderInterface
-    {
-        return new EntityReader($this->select()
-            ->where('user_id', $this->user->getId())    
-            ->andWhere('preferito', 1));
+        return new EntityReader($this->select());
     }
     
     //messo di qua perché il with filter sull'entity reader sembra possa essere

@@ -32,6 +32,8 @@ use Yiisoft\Data\Reader\Filter\Equals;
 use Cycle\ORM\Transaction;
 use Yiisoft\Data\Reader\Filter\Like;
 use Yiisoft\Data\Reader\Sort;
+use App\Repository\UserRepository;
+use function PHPUnit\Framework\isEmpty;
 
 class SiteController
 {
@@ -40,6 +42,7 @@ class SiteController
     private CurrentUser $user;
     private DatabaseManager $dbal;
     private ContattoRepository $contact_repo;
+    //private UserRepository $user_repo;
     
     public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, 
         DatabaseManager $dbal)
@@ -48,9 +51,10 @@ class SiteController
         $this->user = $user;
         $this->dbal = $dbal;
         $this->contact_repo = new ContattoRepository($this->returnORM()->getRepository(Contatto::class)->select(), $this->user);
+        //$this->user_repo = new UserRepository($this->returnORM()->getRepository(User::class)->select(), $this->user);
     }
     
-    public function index(): ResponseInterface
+    public function index(ServerRequestInterface $request): ResponseInterface
     {
         
         $form = new LoginForm();
@@ -58,8 +62,12 @@ class SiteController
         $search_form = new SearchForm();
         
         //$paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
+        $per = (!empty($request->getQueryParams()['per'])) ? $request->getQueryParams()['per'] : null;
+        $pref = (!empty($request->getQueryParams()['pref'])) ? $request->getQueryParams()['pref'] : null;
+        
+        
         $paginator = new OffsetPaginator(
-            $this->contact_repo->all()
+            $this->contact_repo->allWithFilter($per, $pref)
         );
         
         if (!$this->user->isGuest()){
@@ -221,39 +229,6 @@ class SiteController
         ]);
     }
     
-    public function actionPreferred(): ResponseInterface
-    {
-        $contact_form = new ContactForm();
-        $search_form = new SearchForm();
-        $paginator = new OffsetPaginator(
-            $this->contact_repo->findPreferiti()
-        );
-        
-        return $this->viewRenderer->render('index_prova', [
-            'paginator' => $paginator,
-            'contact_form' => $contact_form,
-            'search_form' => $search_form
-        ]);
-        
-    }
-    
-    public function actionOrdinaPer(ServerRequestInterface $request) : ResponseInterface
-    {
-        $contact_form = new ContactForm();
-        $search_form = new SearchForm();
-        $paginator = new OffsetPaginator(
-            $this->contact_repo->all()
-                ->withSort(Sort::any()->withOrder([$request->getQueryParams()['per'] => 'asc']))
-            );
-        
-        return $this->viewRenderer->render('index_prova', [
-            'paginator' => $paginator,
-            'contact_form' => $contact_form,
-            'search_form' => $search_form
-        ]);
-        
-    }
-    
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
         IdentityRepository $identityRepository): ResponseInterface
         {
@@ -263,7 +238,9 @@ class SiteController
                 $form->load($request->getParsedBody());
                 $validator->validate($form);
                 
+                //$a = new IdentityRepository($this->user_repo);
                 $identity = $identityRepository->accessCheck($form->getUsername(), $form->getPassword(), $this->dbal);
+                //$identity = $a->accessCheck($form->getUsername(), $form->getPassword());
                 if ($identity != null){
                     $this->user->login($identity);
                 }

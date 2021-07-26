@@ -13,6 +13,7 @@ use App\Form\ContactForm;
 use App\Form\SearchForm;
 use App\Entity\Contatto;
 use Yiisoft\Yii\DataView\Columns\ActionColumn;
+use Psr\Http\Message\ServerRequestInterface;
 
 
 /** @var App\ApplicationParameters $applicationParameters
@@ -85,18 +86,29 @@ $this->setTitle($applicationParameters->getName());
 ?>
 
 <br>
+
+<?php 
+    $pref = null;
+    if(isset($_GET['pref'])){
+        $pref = $_GET['pref'];
+    }; 
+    $ordinaPer = null;
+    if(isset($_GET['per'])){
+        $ordinaPer = $_GET['per'];
+    };
+?>
 <button>
-	<?php echo Html::a('Mostra solo preferiti', $url->generate('site/preferred')); ?>
+	<?php echo Html::a('Mostra solo preferiti', $url->generate('home', ['pref' => 1, 'per' => $ordinaPer])); ?>
 </button>
 <button>
-	<?php echo Html::a('Mostra tutti', $url->generate('home')); ?>
+	<?php echo Html::a('Mostra tutti', $url->generate('home', ['pref' => 0, 'per' => $ordinaPer])); ?>
 </button>
 <br>
 <button>
-	<?php echo Html::a('Ordina per nome', $url->generate('site/ordinaPer', ['per' => 'nome'])); ?>
+	<?php echo Html::a('Ordina per nome', $url->generate('home', ['per' => 'nome', 'pref' => $pref])); ?>
 </button>
 <button>
-	<?php echo Html::a('Ordina per cognome', $url->generate('site/ordinaPer', ['per' => 'cognome'])); ?>
+	<?php echo Html::a('Ordina per cognome', $url->generate('home', ['per' => 'cognome', 'pref' => $pref])); ?>
 </button>
 <br>
 <button>

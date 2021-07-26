@@ -36,7 +36,6 @@ use App\Entity\Contatto;
     echo Html::a('delete', $url->generate('site/delete', ['id' => $cont->getId()]), ['onclick' => 'return confirm(\'Sei sicuro di voler eliminare questo contatto?\')']);
     echo '<br>';
     echo Html::a('home', $url->generate('home'), ['class' => 'button']);
-    //echo Html::button('home', ['href' => $url->generateAbsolute('home')]);
 ?>
 
 

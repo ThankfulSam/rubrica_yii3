@@ -17,6 +17,4 @@ return [
     Route::methods([Method::GET, Method::POST], '/delete')->action([SiteController::class, 'actionDelete'])->name('site/delete'),
     Route::methods([Method::GET, Method::POST], '/signup')->action([SiteController::class, 'actionSignup'])->name('site/signup'),
     Route::methods([Method::GET, Method::POST], '/search')->action([SiteController::class, 'actionSearch'])->name('site/search'),
-    Route::methods([Method::GET, Method::POST], '/preferred')->action([SiteController::class, 'actionPreferred'])->name('site/preferred'),
-    Route::methods([Method::GET, Method::POST], '/ordinaPer')->action([SiteController::class, 'actionOrdinaPer'])->name('site/ordinaPer'),
 ];
