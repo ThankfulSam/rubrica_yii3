@@ -1,8 +1,5 @@
 <?php
 
-
-
-
 use Yiisoft\Html\Html;
 use App\Entity\Contatto;
 
@@ -11,7 +8,7 @@ use App\Entity\Contatto;
 /* @var Contatto $contatto*/
 ?>
 
-<h1><b><?= $user->getId()?>, stai visualizzando un singolo contatto</b></h1>
+<h1><b><?= $user->getId() ?>, stai visualizzando un singolo contatto</b></h1>
 <br>
 
 <?php 

@@ -34,6 +34,7 @@ use Yiisoft\Data\Reader\Filter\Like;
 use Yiisoft\Data\Reader\Sort;
 use App\Repository\UserRepository;
 use function PHPUnit\Framework\isEmpty;
+use Yiisoft\Session\SessionInterface;
 
 class SiteController
 {
