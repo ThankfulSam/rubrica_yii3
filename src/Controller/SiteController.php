@@ -268,7 +268,6 @@ class SiteController
         
     }
     
-    
     /* METODO CHE PERMETTE LA REGISTRAZIONE DI UN NUOVO UTENTE*/
     public function actionSignup(ServerRequestInterface $request, Validator $validator) {
         $signup_form = new SignupForm();
