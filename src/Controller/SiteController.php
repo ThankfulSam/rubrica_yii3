@@ -234,6 +234,7 @@ class SiteController
                 $validator->validate($form);
                 
                 $identity = $identityRepository->accessCheck($form->getUsername(), $form->getPassword(), $this->dbal);
+                //$identity = $identityRepository->accessCheck($form->getUsername(), $form->getPassword(), $this->dbal);
                 if ($identity != null){
                     $this->user->login($identity);
                     $this->nome_utente = $form->getUsername();

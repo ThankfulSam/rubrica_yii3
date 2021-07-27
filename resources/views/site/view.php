@@ -41,15 +41,15 @@ use Yiisoft\Session\SessionInterface;
 <br>
 <br>
 <?php 
-    $str = 'set as preferred';
+    $str = 'imposta come preferito';
     if ($cont->getPreferito()){
-        $str = 'set as not preferred';
+        $str = 'rimuovi dai preferiti';
     }
     echo Html::a($str, $url->generate('site/setPreferred', ['id' => $cont->getId()]), ['method' => 'POST']);
     echo '<br>';
-    echo Html::a('update', $url->generate('site/update', ['id' => $cont->getId()]));
+    echo Html::a('modifica', $url->generate('site/update', ['id' => $cont->getId()]));
     echo '<br>';
-    echo Html::a('delete', $url->generate('site/delete', ['id' => $cont->getId()]), ['onclick' => 'return confirm(\'Sei sicuro di voler eliminare questo contatto?\')']);
+    echo Html::a('elimina', $url->generate('site/delete', ['id' => $cont->getId()]), ['onclick' => 'return confirm(\'Sei sicuro di voler eliminare questo contatto?\')']);
     echo '<br>';
     echo Html::a('home', $url->generate('home'), ['class' => 'button']);
 ?>

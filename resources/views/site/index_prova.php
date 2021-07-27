@@ -56,14 +56,18 @@ $this->setTitle($applicationParameters->getName());
                 'class' => SerialColumn::class, // this line is optional
             ],
             [
-                'class' => DataColumn::class,
-                'attribute()' => ['nome'],
+                //'class' => DataColumn::class,
                 'label()' => ['Nome e cognome'],
                 'value()' => [static function($contact) use ($url){
                     return Html::a($contact->getNome() .' '.$contact->getCognome(), $url->generate('site/view', ['id' => $contact->getId()]));
                 }],
             ],
-            //'nome', 'cognome'
+            [
+                'label()' => ['Preferito'],
+                'value()' => [static function($contact) {
+                    return ($contact->getPreferito()) ? '*' : '';
+                }]
+            ],
         ])
         ->paginator($paginator);
 ?>

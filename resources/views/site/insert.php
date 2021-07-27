@@ -19,6 +19,6 @@ use Yiisoft\Html\Html;
 <?= Field::widget()->config($form, 'telefono'); ?>
 <?= Field::widget()->config($form, 'indirizzo'); ?>
 <br>
-<?= Html::submitButton('Insert') ?>
+<?= Html::submitButton('Inserisci') ?>
 
 <?= Form::end() ?>
