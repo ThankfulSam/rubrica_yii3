@@ -15,7 +15,6 @@ use App\User\IdentityRepository;
 use Spiral\Database\DatabaseManager;
 use App\Form\ContactForm;
 use Yiisoft\Data\Paginator\OffsetPaginator;
-use App\Reader\MyDataReader;
 use App\Form\SignupForm;
 use function PHPUnit\Framework\equalTo;
 use Yiisoft\Security\PasswordHasher;
@@ -24,18 +23,13 @@ use Cycle\ORM;
 use Spiral\Tokenizer;
 use Cycle\Schema\Compiler;
 use Cycle\Schema\Registry;
-use App\Entity\User;
 use Cycle\Annotated\Entities;
 use App\Entity\Contatto;
 use App\Repository\ContattoRepository;
 use Yiisoft\Data\Reader\Filter\Equals;
 use Cycle\ORM\Transaction;
-use Yiisoft\Data\Reader\Filter\Like;
-use Yiisoft\Data\Reader\Sort;
-use App\Repository\UserRepository;
 use function PHPUnit\Framework\isEmpty;
 use Yiisoft\Session\SessionInterface;
-use Yiisoft\Session\SessionMiddleware;
 
 class SiteController
 {
