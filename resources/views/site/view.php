@@ -34,5 +34,3 @@ use App\Entity\Contatto;
     echo '<br>';
     echo Html::a('home', $url->generate('home'), ['class' => 'button']);
 ?>
-
-
