@@ -45,7 +45,7 @@ use Yiisoft\Session\SessionInterface;
     if ($cont->getPreferito()){
         $str = 'set as not preferred';
     }
-    echo Html::a($str, $url->generate('site/setPreferred', ['id' => $cont->getId()]));//, ['method' => 'POST']);
+    echo Html::a($str, $url->generate('site/setPreferred', ['id' => $cont->getId()]), ['method' => 'POST']);
     echo '<br>';
     echo Html::a('update', $url->generate('site/update', ['id' => $cont->getId()]));
     echo '<br>';

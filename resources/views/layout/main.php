@@ -10,7 +10,6 @@ use Yiisoft\Yii\Bulma\Nav;
 use Yiisoft\Yii\Bulma\NavBar;
 use Yiisoft\Session\SessionInterface;
 
-
 /**
  * @var App\ApplicationParameters $applicationParameters
  * @var Yiisoft\Assets\AssetManager $assetManager

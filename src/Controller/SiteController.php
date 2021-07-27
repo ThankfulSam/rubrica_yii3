@@ -105,8 +105,9 @@ class SiteController
     public function actionSetPreferred(ServerRequestInterface $request): ResponseInterface 
     {
         
+        //if($request->getMethod() === Method::POST && isset($request->getQueryParams()['id'])){
         if(isset($request->getQueryParams()['id'])){
-            
+                
             $id = $request->getQueryParams()['id'];
             
             $orm = $this->returnORM();
