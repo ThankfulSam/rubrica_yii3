@@ -13,14 +13,31 @@ use Yiisoft\Session\SessionInterface;
 <h1><b><?= $session->get('nome') ?>, stai visualizzando un singolo contatto</b></h1>
 <br>
 
-<?php 
-    $cont = current($contatto);
-    echo $cont->getNome() . '<br>';
-    echo $cont->getCognome() . '<br>';
-    echo $cont->getTelefono() . '<br>';
-    echo $cont->getIndirizzo() . '<br>';
-    echo 'preferito: '. $cont->getPreferito() . '<br>';
-?>
+<?php $cont = current($contatto); ?>
+
+<table align="center">
+  <tr>
+    <th>Nome:</th>
+    <td><?php echo $cont->getNome() ?></td>
+  </tr>
+  <tr>
+    <th>Cognome:</th>
+    <td><?php echo $cont->getCognome() ?></td>
+  </tr>
+  <tr>
+    <th>Telefono:</th>
+    <td><?php echo $cont->getTelefono() ?></td>
+  </tr>
+  <tr>
+    <th>Indirizzo:</th>
+    <td><?php echo $cont->getIndirizzo() ?></td>
+  </tr>
+  <tr>
+    <th>Preferito:</th>
+    <td><?php echo ($cont->getPreferito()) ? 'SI' : 'NO' ?></td>
+  </tr>
+</table>
+
 <br>
 <br>
 <?php 
@@ -36,3 +53,15 @@ use Yiisoft\Session\SessionInterface;
     echo '<br>';
     echo Html::a('home', $url->generate('home'), ['class' => 'button']);
 ?>
+
+<style>
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  background-color: #fffaf0
+}
+th, td {
+  padding: 5px;
+  text-align: left;
+}
+</style>
