@@ -2,13 +2,15 @@
 
 use Yiisoft\Html\Html;
 use App\Entity\Contatto;
+use Yiisoft\Session\SessionInterface;
 
 /* @var \Yiisoft\User\CurrentUser $user */
-/*  @var \Yiisoft\Router\UrlGeneratorInterface $url */
-/* @var Contatto $contatto*/
+/* @var \Yiisoft\Router\UrlGeneratorInterface $url */
+/* @var Contatto $contatto */
+/* @var SessionInterface $session */
 ?>
 
-<h1><b><?= $user->getId() ?>, stai visualizzando un singolo contatto</b></h1>
+<h1><b><?= $session->get('nome') ?>, stai visualizzando un singolo contatto</b></h1>
 <br>
 
 <?php 

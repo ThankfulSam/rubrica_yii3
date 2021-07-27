@@ -11,6 +11,7 @@ use Yiisoft\Router\UrlGeneratorInterface;
 use Yiisoft\Router\UrlMatcherInterface;
 use Yiisoft\Yii\View\LayoutParametersInjectionInterface;
 use Yiisoft\User\CurrentUser;
+use Yiisoft\Session\SessionInterface;
 
 final class LayoutViewInjection implements LayoutParametersInjectionInterface
 {
@@ -20,6 +21,7 @@ final class LayoutViewInjection implements LayoutParametersInjectionInterface
     private UrlGeneratorInterface $urlGenerator;
     private CurrentUser $user;
     private UrlMatcherInterface $urlMatcher;
+    private SessionInterface $session;
 
     public function __construct(
         ApplicationParameters $applicationParameters,
@@ -27,7 +29,8 @@ final class LayoutViewInjection implements LayoutParametersInjectionInterface
         CurrentUser $user, 
         Locale $locale,
         UrlGeneratorInterface $urlGenerator,
-        UrlMatcherInterface $urlMatcher
+        UrlMatcherInterface $urlMatcher,
+        SessionInterface $session
     ) {
         $this->applicationParameters = $applicationParameters;
         $this->assetManager = $assetManager;
@@ -35,6 +38,7 @@ final class LayoutViewInjection implements LayoutParametersInjectionInterface
         $this->user = $user;
         $this->urlGenerator = $urlGenerator;
         $this->urlMatcher = $urlMatcher;
+        $this->session = $session;
     }
 
     public function getLayoutParameters(): array
@@ -45,7 +49,8 @@ final class LayoutViewInjection implements LayoutParametersInjectionInterface
             'locale' => $this->locale,
             'urlGenerator' => $this->urlGenerator,
             'urlMatcher' => $this->urlMatcher,
-            'user' => $this->user
+            'user' => $this->user,
+            'session' => $this->session
         ];
     }
 }

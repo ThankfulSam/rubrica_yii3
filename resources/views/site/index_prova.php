@@ -11,17 +11,17 @@ use Yiisoft\Yii\DataView\Columns\DataColumn;
 use Yiisoft\Yii\DataView\Columns\SerialColumn;
 use App\Form\ContactForm;
 use App\Form\SearchForm;
-use App\Entity\Contatto;
-use Yiisoft\Yii\DataView\Columns\ActionColumn;
-use Psr\Http\Message\ServerRequestInterface;
+use Yiisoft\Session\SessionInterface;
 
 
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
  *  @var \Yiisoft\Router\UrlGeneratorInterface $url
+ *  @var SessionInterface $session
  *  @var OffsetPaginator $paginator
  *  @var ContactForm $contact_form
  *  @var SearchForm $search_form
+ *  
  */
 
 $this->params['breadcrumbs'] = '/';
@@ -31,7 +31,7 @@ $this->setTitle($applicationParameters->getName());
 
 <h1 class="title">I miei contatti</h1>
 
-<p class="subtitle">Utente <strong><?php echo $user->getId(); ?></strong>!</p>
+<p class="subtitle">Utente <strong><?php echo $session->get('nome'); ?></strong>!</p>
     
 <?php /* echo ListView::widget()
         ->cssFramework(ListView::BULMA)
@@ -47,27 +47,10 @@ $this->setTitle($applicationParameters->getName());
         ->paginator($paginator);*/
 ?>
 
-<?php /* echo GridView::widget()
-        ->tableOptions(['align'=>'center'])
-        ->columns([
-            [
-                'class' => SerialColumn::class, // this line is optional
-            ],
-            [
-                'class' => DataColumn::class,
-                'attribute()' => ['nome'],
-                'label()' => ['Nome'],
-                'value()' => [static function($contact_form) use ($url){
-                    return Html::a($contact_form['nome'].' '.$contact_form['cognome'], $url->generate('site/view', ['id' => $contact_form['id']]));
-                }],
-            ],
-            'preferito'
-        ])
-        ->paginator($paginator);*/
-?>
 
 <?php echo GridView::widget()
         ->tableOptions(['align'=>'center'])
+        //->pageSize(5)
         ->columns([
             [
                 'class' => SerialColumn::class, // this line is optional

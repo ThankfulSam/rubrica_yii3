@@ -8,6 +8,7 @@ use Yiisoft\Html\Html;
 use Yiisoft\I18n\Locale;
 use Yiisoft\Yii\Bulma\Nav;
 use Yiisoft\Yii\Bulma\NavBar;
+use Yiisoft\Session\SessionInterface;
 
 
 /**
@@ -20,6 +21,7 @@ use Yiisoft\Yii\Bulma\NavBar;
  * @var Yiisoft\Router\UrlMatcherInterface $urlMatcher
  * @var \Yiisoft\Router\UrlGeneratorInterface $url 
  * @var \Yiisoft\User\CurrentUser $user
+ * @var SessionInterface $session
  * */
 
 $assetManager->register([
@@ -33,6 +35,7 @@ $this->addJsFiles($assetManager->getJsFiles());
 $this->addJsStrings($assetManager->getJsStrings());
 $this->addJsVars($assetManager->getJsVars());
 ?>
+<?php $label = ($user->isGuest()) ? 'Rubrica' : 'Rubrica di '.$session->get('nome') ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
 <html lang="<?= Html::encode($locale->language()) ?>">
@@ -50,7 +53,8 @@ $this->addJsVars($assetManager->getJsVars());
             <section class="hero is-fullheight is-light">
                 <div class="hero-head has-background-black">
                     <?= NavBar::widget()
-                        ->brandLabel($applicationParameters->getName())
+                        ->brandLabel($label)
+                        //->brandLabel($applicationParameters->getName())
                         ->brandImage('/images/yii-logo.jpg')
                         ->options(['class' => 'is-black', 'data-sticky' => '', 'data-sticky-shadow' => ''])
                         ->itemsOptions(['class' => 'navbar-end'])
@@ -62,7 +66,7 @@ $this->addJsVars($assetManager->getJsVars());
 					       array_push($item, ['label' => 'Login', 'url' => '/login']);
 					   } else {
 					       array_push($item, ['label' =>'Rubrica', 'url' => '/']);
-					       array_push($item, ['label' =>'Logout '. '('. $user->getId() .')', 'url' => '/logout']);
+					       array_push($item, ['label' =>'Logout '. '('. $session->get('nome') .')', 'url' => '/logout']);
 					   }
 					?>
                     <?= Nav::widget()
@@ -89,11 +93,9 @@ $this->addJsVars($assetManager->getJsVars());
                         <div class="column has-text-left has-text-light">
                             <i class="fas fa-copyright fa-inverse is-hidden-mobile"></i>
                             <a class="is-hidden-mobile" href="https://www.yiiframework.com/" target="_blank" rel="noopener">
-                                <?= date('Y') ?>  <?= Html::encode($applicationParameters->getName()) ?>
+                                <?= date('Y') ?> <?= Html::encode($applicationParameters->getName()) ?>
                             </a>
-                            <a class="is-hidden-desktop is-size-6" href="https://www.yiiframework.com/" target="_blank" rel="noopener">
-                                <?= Html::encode($applicationParameters->getName()) ?>
-                            </a>
+                            
                         </div>
                         <div class="column has-text-centered has-text-light is-hidden-mobile"></div>
                         <div class="column has-text-right has-text-light">

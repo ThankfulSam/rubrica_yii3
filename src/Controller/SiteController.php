@@ -35,6 +35,7 @@ use Yiisoft\Data\Reader\Sort;
 use App\Repository\UserRepository;
 use function PHPUnit\Framework\isEmpty;
 use Yiisoft\Session\SessionInterface;
+use Yiisoft\Session\SessionMiddleware;
 
 class SiteController
 {
@@ -43,7 +44,6 @@ class SiteController
     private CurrentUser $user;
     private DatabaseManager $dbal;
     private ContattoRepository $contact_repo;
-    //private UserRepository $user_repo;
     
     public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, 
         DatabaseManager $dbal)
@@ -52,7 +52,6 @@ class SiteController
         $this->user = $user;
         $this->dbal = $dbal;
         $this->contact_repo = new ContattoRepository($this->returnORM()->getRepository(Contatto::class)->select(), $this->user);
-        //$this->user_repo = new UserRepository($this->returnORM()->getRepository(User::class)->select(), $this->user);
     }
     
     public function index(ServerRequestInterface $request): ResponseInterface
@@ -231,7 +230,7 @@ class SiteController
     }
     
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
-        IdentityRepository $identityRepository): ResponseInterface
+        IdentityRepository $identityRepository, SessionInterface $session): ResponseInterface
         {
             $form = new LoginForm();
             
@@ -239,11 +238,12 @@ class SiteController
                 $form->load($request->getParsedBody());
                 $validator->validate($form);
                 
-                //$a = new IdentityRepository($this->user_repo);
                 $identity = $identityRepository->accessCheck($form->getUsername(), $form->getPassword(), $this->dbal);
-                //$identity = $a->accessCheck($form->getUsername(), $form->getPassword());
                 if ($identity != null){
                     $this->user->login($identity);
+                    $this->nome_utente = $form->getUsername();
+                    $session->open();
+                    $session->set('nome', $form->getUsername());
                 }
                 
             }
@@ -258,11 +258,13 @@ class SiteController
             
     }
     
-    public function actionLogout() {
+    public function actionLogout(SessionInterface $session) {
         $form = new LoginForm();
         
         if (!$this->user->isGuest()){
             $this->user->logout();
+            $session->destroy();
+            $session->close();
         }
             
         return $this->viewRenderer->render('login', ['form' => $form]);
