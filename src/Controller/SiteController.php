@@ -78,15 +78,21 @@ class SiteController
                 'current_page' => $page
             ]);
         } else {
-            return $this->viewRenderer->render('login', [
+            return $this->responseFactory
+                ->createResponse(302)
+                ->withHeader(
+                    'Location', 
+                    $this->urlGenerator->generate('site/login'));
+            /*return $this->viewRenderer->render('login', [
                 'form' => $form
-            ]);
+            ]);*/
         }
     }
     
     public function actionView(ServerRequestInterface $request): ResponseInterface 
     {
-        if (isset($request->getQueryParams()['id'])){
+        
+        if (!$this->user->isGuest() && isset($request->getQueryParams()['id'])){
             $id = $request->getQueryParams()['id'];
             $contatto = $this->contact_repo->all()
                 ->withFilter(new Equals('id', $id))
@@ -96,7 +102,7 @@ class SiteController
                 'contatto' => $contatto
             ]); 
         } else {
-            return $this->viewRenderer->render('index');
+            return $this->backHome();
         }
                     
     }
@@ -107,7 +113,7 @@ class SiteController
     {
         
         //if($request->getMethod() === Method::POST && isset($request->getQueryParams()['id'])){
-        if(isset($request->getQueryParams()['id'])){
+        if(!$this->user->isGuest() && isset($request->getQueryParams()['id'])){
                 
             $id = $request->getQueryParams()['id'];
             
@@ -129,7 +135,7 @@ class SiteController
                     ])
                  );
         } else {
-            return $this->viewRenderer->render('index');    
+            return $this->backHome();    
         }
         
     }
@@ -138,35 +144,42 @@ class SiteController
     
     public function actionUpdate(ServerRequestInterface $request)
     {
-        $form = new ContactForm();
-        $orm = $this->returnORM();
-        
-        if($request->getMethod() === Method::POST) {
-            $form->load($request->getParsedBody());
+
+        if(!$this->user->isGuest()){
             
-            $contact_to_change = $orm->getRepository(Contatto::class)->findByPK($form->getId());
-            $contact_to_change->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
+            $form = new ContactForm();
+            $orm = $this->returnORM();
             
-            (new Transaction($orm))->persist($contact_to_change)->run();
+            if($request->getMethod() === Method::POST) {
+                $form->load($request->getParsedBody());
+                
+                $contact_to_change = $orm->getRepository(Contatto::class)->findByPK($form->getId());
+                $contact_to_change->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
+                
+                (new Transaction($orm))->persist($contact_to_change)->run();
+                
+                $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $form->getId()))->read();
+                
+                return $this->responseFactory
+                ->createResponse(302)
+                ->withHeader(
+                    'Location',
+                    $this->urlGenerator->generate('site/view', [
+                        'id' => $form->getId()
+                    ])
+                );
+                
+            }
             
-            $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $form->getId()))->read();
+            $contatto = $orm->getRepository(Contatto::class)->findByPK($request->getQueryParams()['id']);
+            $form->loadData($contatto);
+            return $this->viewRenderer->render('update', [
+                'form' => $form
+            ]);
             
-            return $this->responseFactory
-            ->createResponse(302)
-            ->withHeader(
-                'Location',
-                $this->urlGenerator->generate('site/view', [
-                    'id' => $form->getId()
-                ])
-            );
-            
+        } else {
+            return $this->backHome();
         }
-        
-        $contatto = $orm->getRepository(Contatto::class)->findByPK($request->getQueryParams()['id']);
-        $form->loadData($contatto);
-        return $this->viewRenderer->render('update', [
-            'form' => $form
-        ]);
         
     }
     
@@ -174,46 +187,53 @@ class SiteController
     
     public function actionInsert(ServerRequestInterface $request)
     {
-        $form = new ContactForm();
-        $error = '';
         
-        if($request->getMethod() === Method::POST) {
+        if(!$this->user->isGuest()){
             
-            $form->load($request->getParsedBody());
+            $form = new ContactForm();
+            $error = '';
             
-            if($form->getNome() != '' && $form->getCognome() != '' &&
-                $form->getTelefono() != ''){
+            if($request->getMethod() === Method::POST) {
                 
-                $contact = new Contatto();
-                $contact->setId($form->getId());
-                $contact->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
-                $contact->setPreferito(0);
-                $contact->setUserId($this->user->getId());
+                $form->load($request->getParsedBody());
                 
-                (new Transaction($this->returnORM()))->persist($contact)->run();
-                
-                return $this->responseFactory
-                ->createResponse(302)
-                ->withHeader(
-                    'Location',
-                    $this->urlGenerator->generate('home')
-                    );
-            } else {
-                $error = 'Nome, cognome e telefono sono campi obbligatori';
+                if($form->getNome() != '' && $form->getCognome() != '' &&
+                    $form->getTelefono() != ''){
+                        
+                        $contact = new Contatto();
+                        $contact->setId($form->getId());
+                        $contact->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
+                        $contact->setPreferito(0);
+                        $contact->setUserId($this->user->getId());
+                        
+                        (new Transaction($this->returnORM()))->persist($contact)->run();
+                        
+                        return $this->responseFactory
+                        ->createResponse(302)
+                        ->withHeader(
+                            'Location',
+                            $this->urlGenerator->generate('home')
+                            );
+                } else {
+                    $error = 'Nome, cognome e telefono sono campi obbligatori';
+                }
             }
+            
+            $id = $this->contact_repo->select()->max('id');
+            
+            $form->setAttribute('id', $id+1);
+            $form->setAttribute('nome', '');
+            $form->setAttribute('cognome', '');
+            $form->setAttribute('telefono', '');
+            $form->setAttribute('indirizzo', '');
+            return $this->viewRenderer->render('insert', [
+                'form' => $form,
+                'error' => $error
+            ]);
+            
+        } else {
+            return $this->backHome();
         }
-        
-        $id = $this->contact_repo->select()->max('id');
-
-        $form->setAttribute('id', $id+1);
-        $form->setAttribute('nome', '');
-        $form->setAttribute('cognome', '');
-        $form->setAttribute('telefono', '');
-        $form->setAttribute('indirizzo', '');
-        return $this->viewRenderer->render('insert', [
-            'form' => $form,
-            'error' => $error
-        ]);
         
     }
     
@@ -221,21 +241,27 @@ class SiteController
     
     public function actionDelete(ServerRequestInterface $request)
     {        
-        if (isset($request->getQueryParams()['id'])){
-            $id = $request->getQueryParams()['id'];
+        if(!$this->user->isGuest()){
+            if (isset($request->getQueryParams()['id'])){
+                $id = $request->getQueryParams()['id'];
+                
+                $orm = $this->returnORM();
+                $contact_to_delete = $orm->getRepository(Contatto::class)->findByPK($id);
+                (new Transaction($orm))->delete($contact_to_delete)->run();
+                
+            }
             
-            $orm = $this->returnORM();
-            $contact_to_delete = $orm->getRepository(Contatto::class)->findByPK($id);
-            (new Transaction($orm))->delete($contact_to_delete)->run();
+            return $this->responseFactory
+            ->createResponse(302)
+            ->withHeader(
+                'Location',
+                $this->urlGenerator->generate('home')
+                );
             
+        } else {
+            return $this->backHome();
         }
         
-        return $this->responseFactory
-        ->createResponse(302)
-        ->withHeader(
-            'Location',
-            $this->urlGenerator->generate('home')
-            );
     }
     
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
@@ -353,22 +379,26 @@ class SiteController
     /*METODO CHE PERMETTE LA RICERCA DI UN CONTATTO A PARTIRE DA NOME O COGNOME*/
     public function actionSearch(ServerRequestInterface $request): ResponseInterface 
     {
-        $search_form = new SearchForm();
-        $contact_form = new ContactForm();
+        if(!$this->user->isGuest()) {
+            $search_form = new SearchForm();
+            $contact_form = new ContactForm();
+            
+            if($request->getMethod() === Method::POST){
+                $search_form->load($request->getParsedBody());
                 
-        if($request->getMethod() === Method::POST){
-            $search_form->load($request->getParsedBody());
-            
-            $paginator = new OffsetPaginator(
-                $this->contact_repo->search($search_form->getNome(), $search_form->getCognome())
-            );
-            
-            return $this->viewRenderer->render('index_prova', [
-                'paginator' => $paginator,
-                'contact_form' => $contact_form,
-                'search_form' => $search_form
-            ]);
-        };
+                $paginator = new OffsetPaginator(
+                    $this->contact_repo->search($search_form->getNome(), $search_form->getCognome())
+                    );
+                
+                return $this->viewRenderer->render('index_prova', [
+                    'paginator' => $paginator,
+                    'contact_form' => $contact_form,
+                    'search_form' => $search_form
+                ]);
+            };
+        } else {
+            return $this->backHome();
+        }
         
     }
     
@@ -385,6 +415,16 @@ class SiteController
         $orm = new ORM\ORM(new ORM\Factory($this->dbal), new ORM\Schema($schema));
         
         return $orm;
+    }
+    
+    public function backHome()
+    {
+        return $this->responseFactory
+        ->createResponse(302)
+        ->withHeader(
+            'Location',
+            $this->urlGenerator->generate('home')
+            );
     }
     
 }
