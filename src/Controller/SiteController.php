@@ -58,17 +58,17 @@ class SiteController
         //$paginator = new OffsetPaginator(new MyDataReader($this->dbal, $this->user));
         $per = (!empty($request->getQueryParams()['per'])) ? $request->getQueryParams()['per'] : null;
         $pref = (!empty($request->getQueryParams()['pref'])) ? $request->getQueryParams()['pref'] : null;
+        $page = (!empty($request->getQueryParams()['page'])) ? intval($request->getQueryParams()['page']) : 1;
+
+        $paginator = (new OffsetPaginator($this->contact_repo->allWithFilter($per, $pref)));
         
-        
-        $paginator = new OffsetPaginator(
-            $this->contact_repo->allWithFilter($per, $pref)
-        );
         
         if (!$this->user->isGuest()){
             return $this->viewRenderer->render('index_prova', [
                 'paginator' => $paginator,
                 'contact_form' => $contact_form,
-                'search_form' => $search_form
+                'search_form' => $search_form,
+                'current_page' => $page
             ]);
         } else {
             return $this->viewRenderer->render('login', [
@@ -254,7 +254,8 @@ class SiteController
             
     }
     
-    public function actionLogout(SessionInterface $session) {
+    public function actionLogout(SessionInterface $session) 
+    {
         $form = new LoginForm();
         
         if (!$this->user->isGuest()){
@@ -268,7 +269,8 @@ class SiteController
     }
     
     /* METODO CHE PERMETTE LA REGISTRAZIONE DI UN NUOVO UTENTE*/
-    public function actionSignup(ServerRequestInterface $request, Validator $validator) {
+    public function actionSignup(ServerRequestInterface $request, Validator $validator) 
+    {
         $signup_form = new SignupForm();
         $form = new LoginForm();
         $pass = new PasswordHasher();
@@ -346,7 +348,8 @@ class SiteController
         
     }
     
-    public function returnORM(){
+    public function returnORM()
+    {
         $cl = (new Tokenizer\Tokenizer(new Tokenizer\Config\TokenizerConfig([
             'directories' => ['src/Entity'],
         ])))->classLocator();

@@ -45,7 +45,7 @@ use Yiisoft\Session\SessionInterface;
     if ($cont->getPreferito()){
         $str = 'rimuovi dai preferiti';
     }
-    echo Html::a($str, $url->generate('site/setPreferred', ['id' => $cont->getId()]), ['method' => 'POST']);
+    echo Html::a($str, $url->generate('site/setPreferred', ['id' => $cont->getId()]), ['data-method' => 'POST']);
     echo '<br>';
     echo Html::a('modifica', $url->generate('site/update', ['id' => $cont->getId()]));
     echo '<br>';
