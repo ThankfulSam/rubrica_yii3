@@ -50,7 +50,7 @@ $this->setTitle($applicationParameters->getName());
 
 <?php echo GridView::widget()
         ->tableOptions(['align'=>'center'])
-        ->pageSize(3)
+        ->pageSize(10)
         ->currentPage((isset($current_page)) ? $current_page : 1)
         ->columns([
             [

@@ -119,21 +119,15 @@ class SiteController
             $contact_to_change->setPreferito(null);
             
             (new Transaction($orm))->persist($contact_to_change)->run();
-            
-            $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $id))->read();
-            
-            /*return $this->responseFactory
+                        
+            return $this->responseFactory
                 ->createResponse(302)
                 ->withHeader(
                     'Location', 
-                    $this->urlGenerator->generate('view', [
-                        'contatto' => $contatto
+                    $this->urlGenerator->generate('site/view', [
+                        'id' => $id
                     ])
-                 );*/
-            
-            return $this->viewRenderer->render('view', [
-                'contatto' => $contatto
-            ]);
+                 );
         } else {
             return $this->viewRenderer->render('index');    
         }
@@ -157,9 +151,15 @@ class SiteController
             
             $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $form->getId()))->read();
             
-            return $this->viewRenderer->render('view', [
-                'contatto' => $contatto
-            ]);
+            return $this->responseFactory
+            ->createResponse(302)
+            ->withHeader(
+                'Location',
+                $this->urlGenerator->generate('site/view', [
+                    'id' => $form->getId()
+                ])
+            );
+            
         }
         
         $contatto = $orm->getRepository(Contatto::class)->findByPK($request->getQueryParams()['id']);
@@ -175,12 +175,6 @@ class SiteController
     public function actionInsert(ServerRequestInterface $request)
     {
         $form = new ContactForm();
-        $contact_form = new ContactForm();
-        $search_form = new SearchForm();
-        
-        $paginator = new OffsetPaginator(
-            $this->contact_repo->all()
-        );
         
         if($request->getMethod() === Method::POST) {
             $form->load($request->getParsedBody());
@@ -193,12 +187,13 @@ class SiteController
             
             (new Transaction($this->returnORM()))->persist($contact)->run();
             
-            return $this->viewRenderer->render('index_prova', 
-                [
-                    'paginator' => $paginator,
-                    'contact_form' => $contact_form,
-                    'search_form' => $search_form
-                ]);
+            return $this->responseFactory
+            ->createResponse(302)
+            ->withHeader(
+                'Location',
+                $this->urlGenerator->generate('home')
+                );
+            
         }
         
         $id = $this->contact_repo->select()->max('id');
@@ -217,13 +212,7 @@ class SiteController
     /* METODO CHE PERMETTE LA RIMOZIONE DI UN CONTATTO*/
     
     public function actionDelete(ServerRequestInterface $request)
-    {
-        $contact_form = new ContactForm();
-        $search_form = new SearchForm();
-        $paginator = new OffsetPaginator(
-            $this->contact_repo->all()
-        );
-        
+    {        
         if (isset($request->getQueryParams()['id'])){
             $id = $request->getQueryParams()['id'];
             
@@ -233,11 +222,12 @@ class SiteController
             
         }
         
-        return $this->viewRenderer->render('index_prova', [
-            'paginator' => $paginator,
-            'contact_form' => $contact_form,
-            'search_form' => $search_form
-        ]);
+        return $this->responseFactory
+        ->createResponse(302)
+        ->withHeader(
+            'Location',
+            $this->urlGenerator->generate('home')
+            );
     }
     
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
@@ -265,22 +255,31 @@ class SiteController
                     'form' => $form
                 ]);
             } else {
-                return $this->viewRenderer->render('index');
+                return $this->responseFactory
+                ->createResponse(302)
+                ->withHeader(
+                    'Location',
+                    $this->urlGenerator->generate('home')
+                    );
             }
             
     }
     
     public function actionLogout(SessionInterface $session) 
     {
-        $form = new LoginForm();
         
         if (!$this->user->isGuest()){
             $this->user->logout();
             $session->destroy();
             $session->close();
         }
-            
-        return $this->viewRenderer->render('login', ['form' => $form]);
+        
+        return $this->responseFactory
+        ->createResponse(302)
+        ->withHeader(
+            'Location',
+            $this->urlGenerator->generate('home')
+            );
         
     }
     
@@ -288,7 +287,6 @@ class SiteController
     public function actionSignup(ServerRequestInterface $request, Validator $validator) 
     {
         $signup_form = new SignupForm();
-        $form = new LoginForm();
         $pass = new PasswordHasher();
         
         if($request->getMethod() === Method::POST){
@@ -318,10 +316,12 @@ class SiteController
                 ])
                 ->run();
                 
-                return $this->viewRenderer->render('login', [
-                    'error' => 'Registrazione avvenuta con successo!',
-                    'form' => $form
-                ]);
+                return $this->responseFactory
+                ->createResponse(302)
+                ->withHeader(
+                    'Location',
+                    $this->urlGenerator->generate('site/login')
+                );
             }
         }
         
