@@ -175,25 +175,32 @@ class SiteController
     public function actionInsert(ServerRequestInterface $request)
     {
         $form = new ContactForm();
+        $error = '';
         
         if($request->getMethod() === Method::POST) {
+            
             $form->load($request->getParsedBody());
             
-            $contact = new Contatto();
-            $contact->setId($form->getId());
-            $contact->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
-            $contact->setPreferito(0);
-            $contact->setUserId($this->user->getId());
-            
-            (new Transaction($this->returnORM()))->persist($contact)->run();
-            
-            return $this->responseFactory
-            ->createResponse(302)
-            ->withHeader(
-                'Location',
-                $this->urlGenerator->generate('home')
-                );
-            
+            if($form->getNome() != '' && $form->getCognome() != '' &&
+                $form->getTelefono() != ''){
+                
+                $contact = new Contatto();
+                $contact->setId($form->getId());
+                $contact->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
+                $contact->setPreferito(0);
+                $contact->setUserId($this->user->getId());
+                
+                (new Transaction($this->returnORM()))->persist($contact)->run();
+                
+                return $this->responseFactory
+                ->createResponse(302)
+                ->withHeader(
+                    'Location',
+                    $this->urlGenerator->generate('home')
+                    );
+            } else {
+                $error = 'Nome, cognome e telefono sono campi obbligatori';
+            }
         }
         
         $id = $this->contact_repo->select()->max('id');
@@ -204,7 +211,8 @@ class SiteController
         $form->setAttribute('telefono', '');
         $form->setAttribute('indirizzo', '');
         return $this->viewRenderer->render('insert', [
-            'form' => $form
+            'form' => $form,
+            'error' => $error
         ]);
         
     }
