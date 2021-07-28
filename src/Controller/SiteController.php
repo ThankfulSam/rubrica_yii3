@@ -30,6 +30,8 @@ use Yiisoft\Data\Reader\Filter\Equals;
 use Cycle\ORM\Transaction;
 use function PHPUnit\Framework\isEmpty;
 use Yiisoft\Session\SessionInterface;
+use Psr\Http\Message\ResponseFactoryInterface;
+use Yiisoft\Router\UrlGeneratorInterface;
 
 class SiteController
 {
@@ -38,14 +40,19 @@ class SiteController
     private CurrentUser $user;
     private DatabaseManager $dbal;
     private ContattoRepository $contact_repo;
+    private ResponseFactoryInterface $responseFactory;
+    private UrlGeneratorInterface $urlGenerator;
     
     public function __construct(ViewRenderer $viewRenderer, CurrentUser $user, 
-        DatabaseManager $dbal)
+        DatabaseManager $dbal, ResponseFactoryInterface $responseFactory,
+        UrlGeneratorInterface $urlGenerator)
     {
         $this->viewRenderer = $viewRenderer->withControllerName('site');
         $this->user = $user;
         $this->dbal = $dbal;
         $this->contact_repo = new ContattoRepository($this->returnORM()->getRepository(Contatto::class)->select(), $this->user);
+        $this->responseFactory = $responseFactory;
+        $this->urlGenerator = $urlGenerator;
     }
     
     public function index(ServerRequestInterface $request): ResponseInterface
@@ -114,6 +121,15 @@ class SiteController
             (new Transaction($orm))->persist($contact_to_change)->run();
             
             $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $id))->read();
+            
+            /*return $this->responseFactory
+                ->createResponse(302)
+                ->withHeader(
+                    'Location', 
+                    $this->urlGenerator->generate('view', [
+                        'contatto' => $contatto
+                    ])
+                 );*/
             
             return $this->viewRenderer->render('view', [
                 'contatto' => $contatto
