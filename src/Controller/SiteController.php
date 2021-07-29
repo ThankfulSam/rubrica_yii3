@@ -55,10 +55,10 @@ class SiteController
         $this->urlGenerator = $urlGenerator;
     }
     
+    /* METODO PER PAGINA PRINCIPALE DELL'APPLICAZIONE CON LA VISUALIZZAZIONE DEI CONTATTI */
     public function index(ServerRequestInterface $request): ResponseInterface
     {
         
-        $form = new LoginForm();
         $contact_form = new ContactForm();
         $search_form = new SearchForm();
         
@@ -69,30 +69,20 @@ class SiteController
 
         $paginator = (new OffsetPaginator($this->contact_repo->allWithFilter($per, $pref)));
         
+        return $this->viewRenderer->render('index_prova', [
+            'paginator' => $paginator,
+            'contact_form' => $contact_form,
+            'search_form' => $search_form,
+            'current_page' => $page
+        ]);
         
-        if (!$this->user->isGuest()){
-            return $this->viewRenderer->render('index_prova', [
-                'paginator' => $paginator,
-                'contact_form' => $contact_form,
-                'search_form' => $search_form,
-                'current_page' => $page
-            ]);
-        } else {
-            return $this->responseFactory
-                ->createResponse(302)
-                ->withHeader(
-                    'Location', 
-                    $this->urlGenerator->generate('site/login'));
-            /*return $this->viewRenderer->render('login', [
-                'form' => $form
-            ]);*/
-        }
     }
     
+    /* METODO PER LA VIEW DI UN SINGOLO CONTATTO */
     public function actionView(ServerRequestInterface $request): ResponseInterface 
     {
         
-        if (!$this->user->isGuest() && isset($request->getQueryParams()['id'])){
+        if (isset($request->getQueryParams()['id'])){
             $id = $request->getQueryParams()['id'];
             $contatto = $this->contact_repo->all()
                 ->withFilter(new Equals('id', $id))
@@ -108,12 +98,10 @@ class SiteController
     }
     
     /*METODO CHE PERMETTE IL SET O RESET COME PREFERITO DI UN CONTATTO*/
-    
     public function actionSetPreferred(ServerRequestInterface $request): ResponseInterface 
     {
         
-        //if($request->getMethod() === Method::POST && isset($request->getQueryParams()['id'])){
-        if(!$this->user->isGuest() && isset($request->getQueryParams()['id'])){
+        if(isset($request->getQueryParams()['id'])){
                 
             $id = $request->getQueryParams()['id'];
             
@@ -141,55 +129,45 @@ class SiteController
     }
     
     /* METODO CHE PERMETTE LA MODIFICA DI UN CONTATTO*/
-    
     public function actionUpdate(ServerRequestInterface $request)
     {
 
-        if(!$this->user->isGuest()){
+        $form = new ContactForm();
+        $orm = $this->returnORM();
+        
+        if($request->getMethod() === Method::POST) {
+            $form->load($request->getParsedBody());
             
-            $form = new ContactForm();
-            $orm = $this->returnORM();
+            $contact_to_change = $orm->getRepository(Contatto::class)->findByPK($form->getId());
+            $contact_to_change->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
             
-            if($request->getMethod() === Method::POST) {
-                $form->load($request->getParsedBody());
-                
-                $contact_to_change = $orm->getRepository(Contatto::class)->findByPK($form->getId());
-                $contact_to_change->updateAll($form->getNome(), $form->getCognome(), $form->getTelefono(), $form->getIndirizzo());
-                
-                (new Transaction($orm))->persist($contact_to_change)->run();
-                
-                $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $form->getId()))->read();
-                
-                return $this->responseFactory
-                ->createResponse(302)
-                ->withHeader(
-                    'Location',
-                    $this->urlGenerator->generate('site/view', [
-                        'id' => $form->getId()
-                    ])
-                );
-                
-            }
+            (new Transaction($orm))->persist($contact_to_change)->run();
             
-            $contatto = $orm->getRepository(Contatto::class)->findByPK($request->getQueryParams()['id']);
-            $form->loadData($contatto);
-            return $this->viewRenderer->render('update', [
-                'form' => $form
-            ]);
+            $contatto = $this->contact_repo->all()->withFilter(new Equals('id', $form->getId()))->read();
             
-        } else {
-            return $this->backHome();
+            return $this->responseFactory
+            ->createResponse(302)
+            ->withHeader(
+                'Location',
+                $this->urlGenerator->generate('site/view', [
+                    'id' => $form->getId()
+                ])
+            );
+            
         }
         
+        $contatto = $orm->getRepository(Contatto::class)->findByPK($request->getQueryParams()['id']);
+        $form->loadData($contatto);
+        return $this->viewRenderer->render('update', [
+            'form' => $form
+        ]);
+            
     }
     
     /* METODO CHE PERMETTE L'INSERIMENTO DI UN NUOVO CONTATTO*/
-    
     public function actionInsert(ServerRequestInterface $request)
     {
         
-        if(!$this->user->isGuest()){
-            
             $form = new ContactForm();
             $error = '';
             
@@ -231,39 +209,31 @@ class SiteController
                 'error' => $error
             ]);
             
-        } else {
-            return $this->backHome();
-        }
-        
     }
     
     /* METODO CHE PERMETTE LA RIMOZIONE DI UN CONTATTO*/
-    
     public function actionDelete(ServerRequestInterface $request)
     {        
-        if(!$this->user->isGuest()){
-            if (isset($request->getQueryParams()['id'])){
-                $id = $request->getQueryParams()['id'];
-                
-                $orm = $this->returnORM();
-                $contact_to_delete = $orm->getRepository(Contatto::class)->findByPK($id);
-                (new Transaction($orm))->delete($contact_to_delete)->run();
-                
-            }
             
-            return $this->responseFactory
-            ->createResponse(302)
-            ->withHeader(
-                'Location',
-                $this->urlGenerator->generate('home')
-                );
+        if (isset($request->getQueryParams()['id'])){
+            $id = $request->getQueryParams()['id'];
             
-        } else {
-            return $this->backHome();
+            $orm = $this->returnORM();
+            $contact_to_delete = $orm->getRepository(Contatto::class)->findByPK($id);
+            (new Transaction($orm))->delete($contact_to_delete)->run();
+            
         }
         
+        return $this->responseFactory
+        ->createResponse(302)
+        ->withHeader(
+            'Location',
+            $this->urlGenerator->generate('home')
+            );
+            
     }
     
+    /* METODO CHE PERMETTE DI EFFETTUARE IL LOGIN */
     public function actionLogin(ServerRequestInterface $request, Validator $validator,
         IdentityRepository $identityRepository, SessionInterface $session): ResponseInterface
         {
@@ -299,20 +269,18 @@ class SiteController
             
     }
     
+    /* METODO CHE PERMETTE DI EFFETTUARE IL LOGOUT */
     public function actionLogout(SessionInterface $session) 
     {
-        
-        if (!$this->user->isGuest()){
-            $this->user->logout();
-            $session->destroy();
-            $session->close();
-        }
+        $this->user->logout();
+        $session->destroy();
+        $session->close();
         
         return $this->responseFactory
         ->createResponse(302)
         ->withHeader(
             'Location',
-            $this->urlGenerator->generate('home')
+            $this->urlGenerator->generate('site/login')
             );
         
     }
@@ -379,29 +347,27 @@ class SiteController
     /*METODO CHE PERMETTE LA RICERCA DI UN CONTATTO A PARTIRE DA NOME O COGNOME*/
     public function actionSearch(ServerRequestInterface $request): ResponseInterface 
     {
-        if(!$this->user->isGuest()) {
-            $search_form = new SearchForm();
-            $contact_form = new ContactForm();
+        
+        $search_form = new SearchForm();
+        $contact_form = new ContactForm();
+        
+        if($request->getMethod() === Method::POST){
+            $search_form->load($request->getParsedBody());
             
-            if($request->getMethod() === Method::POST){
-                $search_form->load($request->getParsedBody());
-                
-                $paginator = new OffsetPaginator(
-                    $this->contact_repo->search($search_form->getNome(), $search_form->getCognome())
-                    );
-                
-                return $this->viewRenderer->render('index_prova', [
-                    'paginator' => $paginator,
-                    'contact_form' => $contact_form,
-                    'search_form' => $search_form
-                ]);
-            };
-        } else {
-            return $this->backHome();
-        }
+            $paginator = new OffsetPaginator(
+                $this->contact_repo->search($search_form->getNome(), $search_form->getCognome())
+                );
+            
+            return $this->viewRenderer->render('index_prova', [
+                'paginator' => $paginator,
+                'contact_form' => $contact_form,
+                'search_form' => $search_form
+            ]);
+        };
         
     }
     
+    /* METODO CHE RITORNA L'ORM COSTRUITO A PARTIRE DALLE ENTITA' SPECIFICATE */
     public function returnORM()
     {
         $cl = (new Tokenizer\Tokenizer(new Tokenizer\Config\TokenizerConfig([
@@ -417,6 +383,7 @@ class SiteController
         return $orm;
     }
     
+    /* METODO CHE FA IL REDIRECT A INDEX */
     public function backHome()
     {
         return $this->responseFactory

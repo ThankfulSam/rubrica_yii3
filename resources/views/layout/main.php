@@ -53,7 +53,6 @@ $this->addJsVars($assetManager->getJsVars());
                 <div class="hero-head has-background-black">
                     <?= NavBar::widget()
                         ->brandLabel($label)
-                        //->brandLabel($applicationParameters->getName())
                         ->brandImage('/images/yii-logo.jpg')
                         ->options(['class' => 'is-black', 'data-sticky' => '', 'data-sticky-shadow' => ''])
                         ->itemsOptions(['class' => 'navbar-end'])
@@ -75,10 +74,7 @@ $this->addJsVars($assetManager->getJsVars());
                                 : ''
                         )
                         ->items($item)
-                        /*->items([
-                            ['label' =>'Rubrica', 'url' => '/'],
-                            ['label' => 'Login', 'url' => '/login']
-                        ])*/ ?>
+                         ?>
 
                     <?= NavBar::end() ?>
                 </div>
