@@ -13,7 +13,6 @@ use App\Form\ContactForm;
 use App\Form\SearchForm;
 use Yiisoft\Session\SessionInterface;
 
-
 /** @var App\ApplicationParameters $applicationParameters
  *  @var CurrentUser $user
  *  @var \Yiisoft\Router\UrlGeneratorInterface $url
@@ -33,31 +32,15 @@ $this->setTitle($applicationParameters->getName());
 
 <p class="subtitle">Utente <strong><?php echo $session->get('nome'); ?></strong>!</p>
     
-<?php /* echo ListView::widget()
-        ->cssFramework(ListView::BULMA)
-        ->itemOptions(['tag' => 'table'])
-        ->itemView(//'//_list_view_contact.php')
-            static fn ($contact_form) => 
-                '<tr >' .
-                //'<button>' . 
-                Html::a($contact_form['nome'].' '.$contact_form['cognome'], $url->generate('site/view', ['id' => $contact_form['id']])) .
-                //'</button>' .
-                '</tr>'
-        )
-        ->paginator($paginator);*/
-?>
-
-
 <?php echo GridView::widget()
         ->tableOptions(['align'=>'center'])
-        ->pageSize(3)
+        ->pageSize(10)
         ->currentPage((isset($current_page)) ? $current_page : 1)
         ->columns([
             [
                 'class' => SerialColumn::class, // this line is optional
             ],
             [
-                //'class' => DataColumn::class,
                 'label()' => ['Nome e cognome'],
                 'value()' => [static function($contact) use ($url){
                     return Html::a($contact->getNome() .' '.$contact->getCognome(), $url->generate('site/view', ['id' => $contact->getId()]));
