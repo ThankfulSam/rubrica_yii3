@@ -34,3 +34,69 @@ a:hover, a:active {
 .input:-ms-input-placeholder, .textarea:-ms-input-placeholder, .select select:-ms-input-placeholder {
   color: hsl(0, 0%, 40%);
 }
+
+.button {
+  border: none;
+  margin-left :5px;
+  margin-right :5px;
+  margin-top :5px;
+  margin-bottom :5px
+}
+
+#green_button {
+  background-color: #4CAF50; /* Green */
+  color: white;
+}
+
+#elimina_button {
+  background-color: #FF0000; /* Red */
+  color: white;
+}
+
+#blue_button {
+	background-color: #4169E1;
+  	color: white;
+}
+
+#skyBlue_button {
+	background-color: #00BFFF;
+  	color: white;
+}
+
+table, th, td {
+  border: 1px solid black;
+  border-collapse: collapse;
+  background-color: #fef8e7;
+  padding: 5px;
+  text-align: left;
+}
+
+th {
+	background-color: #fbdc89;
+}
+
+h1 {
+	font-family: "Comic Sans MS", cursive, sans-serif;
+	font-size: 38px;
+	letter-spacing: -2.2px;
+	word-spacing: 0px;
+	color: #FF0000;
+	font-weight: 400;
+	text-decoration: none;
+	font-style: italic;
+	font-variant: normal;
+	text-transform: capitalize;
+}
+
+h2 {
+	font-family: "Comic Sans MS", cursive, sans-serif;
+	font-size: 29px;
+	letter-spacing: -2.2px;
+	word-spacing: 0px;
+	color: #FF842E;;
+	font-weight: 400;
+	text-decoration: none;
+	font-style: italic;
+	font-variant: normal;
+	text-transform: none;
+}

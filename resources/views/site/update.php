@@ -5,7 +5,7 @@ use Yiisoft\Html\Html;
 
 ?>
 
-<h1 class="title">Modifica contatto</h1>
+<h2>Modifica contatto</h2>
 <?= Form::widget()
 ->action($url->generate('site/update'))
 ->options([

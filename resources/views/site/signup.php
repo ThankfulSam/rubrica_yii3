@@ -27,7 +27,7 @@ use Yiisoft\Html\Html;
 <?= Field::widget()->config($signup_form, 'username'); ?>
 <?= Field::widget()->config($signup_form, 'password')->passwordInput(); ?>
 <?= Field::widget()->config($signup_form, 'repeatPassword')->passwordInput(); ?>
-
+<br>
 <?= Html::submitButton('Sign up') ?>
 
 <?= Form::end() ?>

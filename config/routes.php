@@ -30,6 +30,7 @@ return [
             ->name('site/logout'),
         
         Route::methods([Method::GET, Method::POST], '/search')
+            ->middleware(NascondiTelefonoMiddleware::class)
             ->action([SiteController::class, 'actionSearch'])
             ->name('site/search'),
         

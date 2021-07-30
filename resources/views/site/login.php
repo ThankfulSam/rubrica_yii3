@@ -10,7 +10,6 @@ use Yiisoft\Html\Html;
 /* @var \Yiisoft\User\CurrentUser $user */
 ?>
 
-
 <?php if (!empty($form->getUsername())): ?>
     <div class="notification is-danger">
         <?= Html::encode('username e/o password errati') ?>

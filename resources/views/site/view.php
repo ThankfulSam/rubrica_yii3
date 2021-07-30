@@ -10,8 +10,6 @@ use Yiisoft\Session\SessionInterface;
 /* @var SessionInterface $session */
 ?>
 
-<h1><b><?= $session->get('nome') ?>, stai visualizzando un singolo contatto</b></h1>
-<br>
 
 <?php $cont = current($contatto); ?>
 
@@ -45,23 +43,20 @@ use Yiisoft\Session\SessionInterface;
     if ($cont->getPreferito()){
         $str = 'rimuovi dai preferiti';
     }
-    echo Html::a($str, $url->generate('site/setPreferred', ['id' => $cont->getId()]));
+    echo Html::a($str, $url->generate('site/setPreferred', ['id' => $cont->getId()]), ['class' => 'button']);
     echo '<br>';
-    echo Html::a('modifica', $url->generate('site/update', ['id' => $cont->getId()]));
+    echo Html::a('modifica', $url->generate('site/update', ['id' => $cont->getId()]), ['class' => 'button']);
+    echo Html::a('elimina', 
+        $url->generate('site/delete', ['id' => $cont->getId()]), 
+        [
+            'onclick' => 'return confirm(\'Sei sicuro di voler eliminare questo contatto?\')', 
+            'class'=>'button',
+            'id'=>'elimina_button'
+        ]);
     echo '<br>';
-    echo Html::a('elimina', $url->generate('site/delete', ['id' => $cont->getId()]), ['onclick' => 'return confirm(\'Sei sicuro di voler eliminare questo contatto?\')']);
-    echo '<br>';
-    echo Html::a('home', $url->generate('home'), ['class' => 'button']);
+    echo Html::a('home', $url->generate('home'), ['class' => 'button', 'id'=>'green_button']);
 ?>
 
 <style>
-table, th, td {
-  border: 1px solid black;
-  border-collapse: collapse;
-  background-color: #fffaf0
-}
-th, td {
-  padding: 5px;
-  text-align: left;
-}
+
 </style>

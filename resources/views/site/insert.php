@@ -7,7 +7,7 @@ use App\Form\ContactForm;
 /* @var ContactForm @form */
 ?>
 
-<h1 class="title">Inserimento nuovo contatto</h1>
+<h2>Inserimento nuovo contatto</h2>
 
 <?php if (!empty($error)): ?>
     <div class="notification is-danger">

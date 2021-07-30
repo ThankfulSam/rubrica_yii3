@@ -28,7 +28,7 @@ $this->params['breadcrumbs'] = '/';
 $this->setTitle($applicationParameters->getName());
 ?>
 
-<h1 class="title">I miei contatti</h1>
+<h1>I miei contatti</h1>
 
 <p class="subtitle">Utente <strong><?php echo $session->get('nome'); ?></strong>!</p>
     
@@ -69,23 +69,14 @@ $this->setTitle($applicationParameters->getName());
         $ordinaPer = $_GET['per'];
     };
 ?>
-<button>
-	<?php echo Html::a('Mostra solo preferiti', $url->generate('home', ['pref' => 1, 'per' => $ordinaPer])); ?>
-</button>
-<button>
-	<?php echo Html::a('Mostra tutti', $url->generate('home', ['pref' => 0, 'per' => $ordinaPer])); ?>
-</button>
+
+<?php echo Html::a('Mostra solo preferiti', $url->generate('home', ['pref' => 1, 'per' => $ordinaPer]), ['class' => 'button', 'id' => 'blue_button']); ?>
+<?php echo Html::a('Mostra tutti', $url->generate('home', ['pref' => 0, 'per' => $ordinaPer]), ['class' => 'button', 'id' => 'blue_button']); ?>
 <br>
-<button>
-	<?php echo Html::a('Ordina per nome', $url->generate('home', ['per' => 'nome', 'pref' => $pref])); ?>
-</button>
-<button>
-	<?php echo Html::a('Ordina per cognome', $url->generate('home', ['per' => 'cognome', 'pref' => $pref])); ?>
-</button>
+<?php echo Html::a('Ordina per nome', $url->generate('home', ['per' => 'nome', 'pref' => $pref]), ['class' => 'button', 'id' => 'skyBlue_button']); ?>
+<?php echo Html::a('Ordina per cognome', $url->generate('home', ['per' => 'cognome', 'pref' => $pref]), ['class' => 'button', 'id' => 'skyBlue_button']); ?>
 <br>
-<button>
-	<?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert')); ?>
-</button>
+<?php echo Html::a('Inserisci nuovo contatto', $url->generate('site/insert'), ['class' => 'button', 'id' => 'green_button']); ?>
 <br>
 <br>
 
@@ -95,11 +86,13 @@ $this->setTitle($applicationParameters->getName());
     ->options([
         'csrf' => $csrf,
     ])
-    ->begin() ?>
+    ->begin() 
+?>
 
-<?= Field::widget()->config($search_form, 'nome'); ?>
-<?= Field::widget()->config($search_form, 'cognome'); ?>
+<?= Field::widget()->label(false)->config($search_form, 'nome'); ?>
+<?= Field::widget()->label(false)->config($search_form, 'cognome'); ?>
 
-<?= Html::submitButton('Cerca') ?>
+<?= Html::submitButton('Cerca', ['class' => 'button']) ?>
 
 <?= Form::end() ?>
+
