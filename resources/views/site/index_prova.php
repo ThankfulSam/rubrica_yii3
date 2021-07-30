@@ -46,6 +46,7 @@ $this->setTitle($applicationParameters->getName());
                     return Html::a($contact->getNome() .' '.$contact->getCognome(), $url->generate('site/view', ['id' => $contact->getId()]));
                 }],
             ],
+            'telefono',
             [
                 'label()' => ['Preferito'],
                 'value()' => [static function($contact) {

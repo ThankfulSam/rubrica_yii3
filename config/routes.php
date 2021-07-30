@@ -9,6 +9,7 @@ use Yiisoft\Router\Group;
 use Yiisoft\Session\SessionMiddleware;
 use Middlewares\BasicAuthentication;
 use Yiisoft\Auth\Middleware\Authentication;
+use App\Middleware\NascondiTelefonoMiddleware;
 
 return [
     
@@ -20,6 +21,7 @@ return [
     ->routes(
         
         Route::get('/')
+            ->middleware(NascondiTelefonoMiddleware::class)
             ->action([SiteController::class, 'index'])
             ->name('home'),
         

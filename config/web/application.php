@@ -11,6 +11,7 @@ use Yiisoft\Injector\Injector;
 use Yiisoft\Middleware\Dispatcher\MiddlewareDispatcher;
 use Yiisoft\Router\Middleware\Router;
 use Yiisoft\Session\SessionMiddleware;
+use App\Middleware\NascondiTelefonoMiddleware;
 
 return [
     Yiisoft\Yii\Web\Application::class => [
@@ -23,6 +24,7 @@ return [
                             CsrfMiddleware::class,
                             SessionMiddleware::class,
                             ErrorCatcher::class,
+                            //NascondiTelefonoMiddleware::class
                         ]
                     );
             }),
