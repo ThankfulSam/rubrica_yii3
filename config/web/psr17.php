@@ -28,9 +28,5 @@ return [
     
     //User
     IdentityRepositoryInterface::class => IdentityRepository::class,
-    
-    //DataReader
-    //DataReaderInterface::class => MyDataReader::class,
-    //FilterInterface::class => \App\Reader\MyFiltro::class,
-    //FilterProcessorInterface::class => \App\Reader\MyFiltroProcessor::class,
+   
 ];

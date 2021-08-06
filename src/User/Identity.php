@@ -18,7 +18,7 @@ final class Identity implements IdentityInterface
         return $this->id;
     }
     
-    public function getUsername(): string 
+    /*public function getUsername(): string 
     {
         $dbal = new DatabaseManager();
         $user = $dbal->database('default')
@@ -26,5 +26,5 @@ final class Identity implements IdentityInterface
             ->from('users')
             ->where(['id', $this->id]);
         return $user;
-    }
+    }*/
 }
